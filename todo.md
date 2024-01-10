@@ -1,0 +1,1 @@
+- recommendation system: rating (counting like weight: 1 = 0.2, ..., 5 = 1.0) * bookmark
