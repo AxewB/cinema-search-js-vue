@@ -1,2 +1,5 @@
 - recommendation system: rating (counting like weight: 1 = 0.2, ..., 5 = 1.0) * bookmark
 - featured film (functions, maybe create algorithm to get it on base of rating or something)
+- add more design elements on film cards on home page (rating, description by using v-sheet maybe, etc.)
+- button to add film to favourites
+- move home page data about pages and number of films which should display on page to separate store AND fix filmsFromRange function after that
