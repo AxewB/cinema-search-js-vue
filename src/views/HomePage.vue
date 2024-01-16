@@ -10,20 +10,22 @@
         <v-sheet class="bg-transparent" width="33%"/>
         <v-sheet class="bg-transparent d-flex justify-center" width="33%">
           <router-link :to="{name: 'home'}" tag="v-btn">
-            <v-btn>Home</v-btn>
+            <v-btn exact>Home</v-btn>
           </router-link>
-          <router-link :to="{name: 'home'}" tag="v-btn">
-            <v-btn>Recommendations</v-btn>
+          <router-link :to="{name: 'recommendations'}" tag="v-btn">
+            <v-btn exact>Recommendations</v-btn>
           </router-link>
 
           <!-- todo: just sending to a random film page -->
           <!-- also add 'to=link' -->
-          <router-link :to="{name: 'home'}" tag="v-btn">
+          <router-link exact :to="{name: 'home'}" tag="v-btn">
             <v-btn>Feeling lucky</v-btn>
           </router-link>
         </v-sheet>
         <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-          <v-btn icon="mdi-heart"/>
+          <router-link :to="{name: 'favourites'}" tag="v-btn" exact>
+            <v-btn icon="mdi-heart" />
+          </router-link>
         </v-sheet>
       </v-toolbar>
     </v-sheet>
@@ -217,7 +219,7 @@ export default {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
       const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
       this.filmStore.filterRange = [begin, end]
-      return this.filmStore.filmsFromRange
+      return this.filmStore.filmsFromRange(begin, end)
     },
     pageCount() {
       return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
