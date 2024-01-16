@@ -19,7 +19,7 @@ const routes = [
     children: [
       {
         path: '',
-        component() => import('../views/FilmPage.vue')
+        component: () => import('../views/FilmPage.vue')
       }
     ]
   }
