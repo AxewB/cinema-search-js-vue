@@ -7,38 +7,41 @@ function getRandomInt(max) {
 export const useFilmStore = defineStore('film', {
   state: () => ({
     data: {},
-    films: {}
+    films: {},
+    filteringSettings: {
+      rating: 0,
+      name: '',
+      year: 0,
+      length: 0
+    }
   }),
   getters: {
-    items(state) {
-      return state.data.docs;
-    },
-    filmsCount(state) { 
-      return state.films.length
+    filmsCount(state) {
+      if (state.filteringSettings.name || state.filteringSettings.length || state.filteringSettings.rating || state.filteringSettings.year)
+        return this.filteredFilms.length
+      else
+        return state.films.length
     },
     featuredFilm(state) {
       const index = getRandomInt(state.films.length)
       return state.films[index];
     },
-    filteredFilms: (state) => {
-      // return (name, year, rating, duration) => {
-      //   state.films.filter((film) => 
-      //     film.year === year && 
-      //     film.name.toLowerCase().includes(name.toLowerCase()) &&
-      //     film.rating.filmCritics >= rating &&
-      //     film.movieLength <= duration
-      //   )
-      // }
-      return (name) => {
-        state.films.filter((film) => film.name === name)
-      }
+    filteredFilms(state) {
+
+      return state.films.filter((film) =>
+          film.name.includes( state.filteringSettings.name) &&
+          film.rating.filmCritics >= state.filteringSettings.rating &&
+          film.movieLength <= state.filteringSettings.length
+        )
     },
-    filmsFromRange: () => { 
-      // return (begin, end) => state.films.slice(begin, end)
-      return (begin, end) => this.filteredFilms.slice(begin, end)
+    filmsFromRange: (state) => {
+      if (state.filteringSettings.name || state.filteringSettings.length || state.filteringSettings.rating || state.filteringSettings.year)
+        return (begin, end) =>
+          state.filteredFilms.slice(begin, end)
+      else return (begin, end) => state.films.slice(begin, end)
     }
   },
-  actions: { 
+  actions: {
     filmsLoad() {
       this.data = {
         "docs": [
@@ -8367,6 +8370,6 @@ export const useFilmStore = defineStore('film', {
       }
       this.films = this.data.docs;
     },
-    
+
   }
 })
