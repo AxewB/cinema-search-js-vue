@@ -9,7 +9,3 @@
     name: "FilmPage"
   }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
