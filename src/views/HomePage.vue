@@ -219,7 +219,7 @@ export default {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
       const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
       this.filmStore.filterRange = [begin, end]
-      return this.filmStore.filmsFromRange(begin, end)
+      return this.filmStore.filmsFromRange
     },
     pageCount() {
       return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
