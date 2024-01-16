@@ -80,6 +80,7 @@
                       hide-details
                       label="Year"
                       clearable
+                      :items="filmsYears"
                       @update:model-value="resetPage"/>
             <VSlider v-model="filteringSettings.length"
                       class="mr-5"
@@ -222,7 +223,10 @@ export default {
       return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
     },
     filmsYears() {
-      return []
+      let result = [];
+      for (let i = 1980; i < 2023; i++)
+        result.push(i);
+      return result;
     }
   },
   methods: {
