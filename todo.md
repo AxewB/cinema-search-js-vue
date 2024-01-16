@@ -3,3 +3,4 @@
 - add more design elements on film cards on home page (rating, description by using v-sheet maybe, etc.)
 - button to add film to favourites
 - move home page data about pages and number of films which should display on page to separate store AND fix filmsFromRange function after that
+- make top bar as separate component (to use it on recommendations page too)
