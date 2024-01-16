@@ -14,7 +14,7 @@ const routes = [
     component: () => import('../views/RecommendationsPage.vue')
   },
   {
-    path: 'favourites',
+    path: '/favourites',
     name: 'favourites',
     component: () => import('../views/FavouritesPage.vue')
   },
