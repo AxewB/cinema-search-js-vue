@@ -1,19 +1,26 @@
 <template>
   <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
     <v-sheet class="bg-transparent" max-width="1400px">
-    
+
       <!-- top bar -->
       <v-sheet class="background-transparent">
-      <v-toolbar rounded 
-                 elevation="10" 
+      <v-toolbar rounded
+                 elevation="10"
                  class="d-flex">
         <v-sheet class="bg-transparent" width="33%"/>
         <v-sheet class="bg-transparent d-flex justify-center" width="33%">
-          <v-btn>Home</v-btn>
-          <v-btn>Recommendations</v-btn>
+          <router-link :to="{name: 'home'}" tag="v-btn">
+            <v-btn>Home</v-btn>
+          </router-link>
+          <router-link :to="{name: 'home'}" tag="v-btn">
+            <v-btn>Recommendations</v-btn>
+          </router-link>
 
           <!-- todo: just sending to a random film page -->
-          <v-btn>Feeling lucky</v-btn>
+          <!-- also add 'to=link' -->
+          <router-link :to="{name: 'home'}" tag="v-btn">
+            <v-btn>Feeling lucky</v-btn>
+          </router-link>
         </v-sheet>
         <v-sheet class="bg-transparent d-flex justify-end" width="33%">
           <v-btn icon="mdi-heart"/>
@@ -22,30 +29,30 @@
     </v-sheet>
 
     <!-- featured film -->
-    <v-img class="ma-5 d-flex rounded-lg " 
+    <v-img class="ma-5 d-flex rounded-lg "
             v-bind=props
             :src="featuredFilmPoster"
-            cover 
+            cover
             height="500px">
       <div class="bg-blur featured-film-overlay pa-5 rounded-lg d-flex flex-row">
-        
+
           <v-sheet  class="bg-transparent">
             <div class="text-h4 text-disabled">Featured Film</div>
             <VDivider class="mb-3"/>
             <div class="text-h2 mb-5">{{ featuredFilmName }}</div>
-            <div class="text-body-1 text-disabled" 
+            <div class="text-body-1 text-disabled"
                 height="100%">
             {{ featuredFilmDescription }}
-           
+
             </div>
             <v-btn class="mt-5" variant="outlined" size="large">WATCH NOW</v-btn>
           </v-sheet>
        <v-img class="rounded-lg ma-2"
             :src="featuredFilmPoster"
             cover
-            width="300px">          
+            width="300px">
         </v-img>
-      </div> 
+      </div>
     </v-img>
 
     <!-- films list -->
@@ -53,9 +60,9 @@
       <v-sheet class="flex-grow-1 pa-2" rounded>
 
         <!-- filters -->
-        <v-toolbar rounded 
-                    class="d-flex 
-                           flex-row 
+        <v-toolbar rounded
+                    class="d-flex
+                           flex-row
                            justify-space-around
                            align-center
                            pa-2">
@@ -65,27 +72,37 @@
             prepend-icon="mdi-magnify"
             single-line
             label="Search"
-            v-model="searchData.name" />
-          
-            <VSelect v-model="searchData.year" class="mr-5" hide-details label="Year" clearable/>
-            <VSlider v-model="searchData.length" 
-                      class="mr-5" 
-                      hide-details 
+            v-model="filteringSettings.name"
+            @update:model-value="resetPage"/>
+
+            <VSelect v-model="filteringSettings.year"
+                      class="mr-5"
+                      hide-details
+                      label="Year"
+                      clearable
+                      @update:model-value="resetPage"/>
+            <VSlider v-model="filteringSettings.length"
+                      class="mr-5"
+                      hide-details
                       thumb-label
-                      label="Length" 
+                      label="Length"
                       :min="0"
                       :max="200"
-                      :step="1"/>
-            <VSlider v-model="searchData.rating" 
-                      class="mr-5" 
-                      hide-details 
+                      :step="1"
+                      @update:model-value="resetPage"/>
+            <VSlider v-model="filteringSettings.rating"
+                      class="mr-5"
+                      hide-details
                       thumb-label
-                      label="Rating" 
-                      :min="1" 
-                      :max="5" 
-                      :step="1"/>
-        
-        <v-btn-toggle v-model="currentTileSize">
+                      label="Rating"
+                      :min="1"
+                      :max="10"
+                      :step="1"
+                      @update:model-value="resetPage"/>
+
+        <v-btn-toggle v-model="currentTileSize"
+                      color="deep-purple-accent-3"
+                      mandatory>
           <v-btn value="small">Small</v-btn>
           <v-btn value="standart">Medium</v-btn>
           <v-btn value="large">Large</v-btn>
@@ -93,17 +110,51 @@
 
         <!-- list itself -->
         </v-toolbar>
-        <v-sheet width="100%" 
-                 class="d-flex 
-                        flex-row 
-                        flex-wrap 
-                        justify-space-around 
+
+        <v-toolbar class="mt-2
+                          pa-2
+                          d-flex
+                          flex-row
+                          align-center
+                          justify-start"
+                    rounded
+                    density="compact">
+          <div class="mr-5 text-body-1" >Сортировать по:</div>
+          <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
+            <v-btn class="mr-5 text-body-1"
+                    @click="filmStore.sortBy = 'name'"
+                    :active="sortBy === 'name'">Имени</v-btn>
+            <v-btn class="mr-5 text-body-1"
+                    @click="filmStore.sortBy = 'year'"
+                    :active="sortBy === 'year'">Году</v-btn>
+            <v-btn class="mr-5 text-body-1"
+                    @click="filmStore.sortBy = 'movieLength'"
+                    :active="sortBy === 'movieLength'">Длительности</v-btn>
+            <v-btn class="mr-5 text-body-1"
+                    @click="filmStore.sortBy = 'filmCritics'"
+                    :active="sortBy === 'filmCritics'">Рейтингу</v-btn>
+          </div>
+          <div class="">
+          <v-btn-toggle v-model="filmStore.sortDirection"
+                        color="deep-purple-accent-3"
+                        mandatory>
+              <v-btn icon="mdi-sort-ascending" value="ascending"/>
+              <v-btn icon="mdi-sort-descending" value="descending"/>
+            </v-btn-toggle>
+
+          </div>
+        </v-toolbar>
+        <v-sheet width="100%"
+                 class="d-flex
+                        flex-row
+                        flex-wrap
+                        justify-space-around
                         mt-5">
-          <v-hover v-for="film in filmsPageList" :key="film.id"
-                   v-slot="{ isHovering, props }"> 
+          <v-hover v-for="film in filmsPageList" :key="film.id + filmStore.sortBy + filmStore.sortDirection"
+                   v-slot="{ isHovering, props }">
 
             <v-card v-bind="props"
-                    :width="tileSize[currentTileSize]" 
+                    :width="tileSize[currentTileSize]"
                     class="mr-2 ml-2 mb-5"
                     :elevation="isHovering ? 10 : 0">
               <v-img :src="film.poster.previewUrl">
@@ -113,27 +164,27 @@
                 contained
                 scrim="#000"
                 >
-                  {{ film.shortDescription }}                
+                  {{ film.shortDescription }}
                 </v-overlay>
               </v-img>
               <v-card-title >{{film.name}}</v-card-title>
               <v-card-text class="text-caption text-disabled">{{film.year}}</v-card-text>
-              
+
             </v-card>
           </v-hover>
-          
+
         </v-sheet>
       </v-sheet>
     </v-sheet>
     <v-pagination :length="pageCount" v-model="currentFilmPage"></v-pagination>
   </v-sheet>
   </v-sheet>
-  
- 
+
+
 </template>
 
 <script>
-import { mapStores } from 'pinia';
+import { mapStores, mapState } from 'pinia';
 import {useFilmStore} from '@/store/filmStore'
 
 export default {
@@ -144,10 +195,10 @@ export default {
       tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
       currentTileSize: 'standart',
       tilesOnOnePage: {'small': 24, 'standart': 18, 'large': 15},
-      searchData: {year: 0, rating: 0, name: '', length: 0},
     }
   },
   computed: {
+    ...mapState(useFilmStore, ['filteringSettings', 'sortBy']),
     ...mapStores(useFilmStore),
     featuredFilm() {
       return this.filmStore.featuredFilm;
@@ -164,10 +215,19 @@ export default {
     filmsPageList() {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
       const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
-      return this.filmStore.filmsFromRange(begin, end)
+      this.filmStore.filterRange = [begin, end]
+      return this.filmStore.filmsFromRange
     },
     pageCount() {
-      return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize]) 
+      return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
+    },
+    filmsYears() {
+      return []
+    }
+  },
+  methods: {
+    resetPage() {
+      this.currentFilmPage = 1
     },
 
   },

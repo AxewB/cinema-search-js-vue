@@ -13,7 +13,11 @@ export const useFilmStore = defineStore('film', {
       name: '',
       year: 0,
       length: 0
-    }
+    },
+    filterRange: [0, 0],
+    sortBy: 'name', // name, rating, length, year
+    sortDirection: 'ascending',
+
   }),
   getters: {
     filmsCount(state) {
@@ -27,19 +31,23 @@ export const useFilmStore = defineStore('film', {
       return state.films[index];
     },
     filteredFilms(state) {
-
       return state.films.filter((film) =>
-          film.name.includes( state.filteringSettings.name) &&
-          film.rating.filmCritics >= state.filteringSettings.rating &&
-          film.movieLength <= state.filteringSettings.length
+          film.name.includes(state.filteringSettings.name) &&
+          (state.filteringSettings.rating ? film.rating.filmCritics >= state.filteringSettings.rating : true) &&
+          (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
+          (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
         )
     },
-    filmsFromRange: (state) => {
-      if (state.filteringSettings.name || state.filteringSettings.length || state.filteringSettings.rating || state.filteringSettings.year)
-        return (begin, end) =>
-          state.filteredFilms.slice(begin, end)
-      else return (begin, end) => state.films.slice(begin, end)
-    }
+    sortedByField(state) {
+      const result = this.filteredFilms.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
+      if (state.sortDirection === 'descending')
+        result.reverse();
+      return result
+    },
+    filmsFromRange(state) {
+      return this.sortedByField
+    },
+
   },
   actions: {
     filmsLoad() {
