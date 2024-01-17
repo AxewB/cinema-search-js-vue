@@ -20,10 +20,10 @@ const routes = [
   },
   {
     path: '/film/:id',
-    name: 'film',
     children: [
       {
         path: '',
+        name: 'film',
         component: () => import('../views/FilmPage.vue')
       }
     ]
