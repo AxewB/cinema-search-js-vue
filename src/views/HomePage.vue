@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
-    <v-sheet class="bg-transparent" max-width="1400px">
+    <v-sheet class="bg-transparent" width="1400px">
       <NavigationBar/>
       <!-- featured film -->
       <v-img class="ma-5 d-flex rounded-lg "
@@ -39,13 +39,15 @@
                             flex-row
                             justify-space-around
                             align-center
-                            pa-2">
+                            pa-2"
+                      density="compact">
             <VTextField
               class="mr-5 flex-grow-1"
               hide-details
               prepend-icon="mdi-magnify"
               single-line
               label="Search"
+              density="compact"
               v-model="filteringSettings.name"
               @update:model-value="resetPage"/>
 
@@ -54,7 +56,8 @@
                         hide-details
                         label="Year"
                         clearable
-                        :items="filmsYears"
+                        :items="filmStore.filmsYearRange"
+                        density="compact"
                         @update:model-value="resetPage"/>
               <VSlider v-model="filteringSettings.length"
                         class="mr-5"
@@ -75,13 +78,6 @@
                         :step="1"
                         @update:model-value="resetPage"/>
 
-          <v-btn-toggle v-model="currentTileSize"
-                        color="deep-purple-accent-3"
-                        mandatory>
-            <v-btn value="small">Small</v-btn>
-            <v-btn value="standart">Medium</v-btn>
-            <v-btn value="large">Large</v-btn>
-          </v-btn-toggle>
 
           <!-- list itself -->
           </v-toolbar>
@@ -109,14 +105,36 @@
                       @click="filmStore.sortBy = 'filmCritics'"
                       :active="sortBy === 'filmCritics'">Рейтингу</v-btn>
             </div>
-            <div class="">
-            <v-btn-toggle v-model="filmStore.sortDirection"
-                          color="deep-purple-accent-3"
-                          mandatory>
-                <v-btn icon="mdi-sort-ascending" value="ascending"/>
-                <v-btn icon="mdi-sort-descending" value="descending"/>
+            <div>
+              <v-btn-toggle v-model="filmStore.sortDirection"
+                          border
+                          mandatory
+                          class="mr-2">
+                <v-btn icon value="ascending">
+                  <VTooltip text="Ascending" activator="parent" location="top"/>
+                  <VIcon icon="mdi-sort-ascending"/>
+                </v-btn>
+                <v-btn icon value="descending">
+                  <VTooltip text="Descending" activator="parent" location="top"/>
+                  <VIcon icon="mdi-sort-descending"/>
+                </v-btn>
               </v-btn-toggle>
-
+              <v-btn-toggle v-model="currentTileSize"
+                            mandatory 
+                            border>
+                <v-btn value="small" icon>
+                  <VTooltip text="Small" activator="parent" location="top"/>
+                  <VIcon icon="mdi-size-s"/>
+                </v-btn>
+                <v-btn value="standart" icon>
+                  <VTooltip text="Medium" activator="parent" location="top"/>
+                  <VIcon icon="mdi-size-m"/>
+                </v-btn>
+                <v-btn value="large" icon>
+                  <VTooltip text="Large" activator="parent" location="top"/>
+                  <VIcon icon="mdi-size-l"/>
+                </v-btn>
+              </v-btn-toggle>
             </div>
           </v-toolbar>
           <v-sheet width="100%"
@@ -133,19 +151,29 @@
                       :width="tileSize[currentTileSize]"
                       class="mr-2 ml-2 mb-5"
                       :elevation="isHovering ? 10 : 0"
-                      @click="moveToFilm(film)">
+                      @click="moveToFilm(film)"
+                      border>
                 <v-img :src="film.poster.previewUrl">
                   <v-overlay
-                  class="pa-2"
                   :model-value="isHovering"
                   contained
-                  scrim="#000"
-                  >
-                    {{ film.shortDescription }}
+                  scrim="#000">
+                    <v-sheet class="pa-2 text-justify bg-transparent">
+                      {{ film.shortDescription }}
+                    </v-sheet>
                   </v-overlay>
                 </v-img>
                 <v-card-title >{{film.name}}</v-card-title>
-                <v-card-text class="text-caption text-disabled">{{film.year}}</v-card-text>
+                <v-card-text class="text-caption text-disabled d-flex flex-row align-center justify-space-between">
+                  {{film.year}} 
+                  <v-rating
+                    readonly
+                    :length="5"
+                    :size="24"
+                    :model-value="film.rating.kp / 2"
+                    active-color="primary"
+                  />
+                </v-card-text>
 
               </v-card>
             </v-hover>
@@ -177,11 +205,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(useFilmStore, ['filteringSettings', 'sortBy']),
+    ...mapState(useFilmStore, ['filteringSettings', 'sortBy', 'featuredFilm']),
     ...mapStores(useFilmStore),
-    featuredFilm() {
-      return this.filmStore.featuredFilm;
-    },
     featuredFilmPoster () {
       return this.featuredFilm.poster.url;
     },
@@ -192,36 +217,38 @@ export default {
       return this.featuredFilm.description;
     },
     filmsPageList() {
+      return this.filmStore.sortedNFilteredByField
+    },
+    filmsOnOnePage() {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
       const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
-      // this.filmStore.filterRange = [begin, end]
-      return this.filmStore.filmsFromRange
+      return [begin, end]
     },
     pageCount() {
       return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
     },
-    filmsYears() {
-      let result = [];
-      for (let i = 1980; i < 2023; i++)
-        result.push(i);
-      return result;
-    }
   },
   methods: {
     resetPage() {
       this.currentFilmPage = 1
     },
-
+    moveToFilm(film) {
+      this.$router.push({
+        name: 'film',
+        params: { currentFilm: film, id: film.id }
+      })
+    },
   },
   beforeMount() {
     this.filmStore.filmsLoad();
   },
-  moveToFilm(film) {
-    this.$router.push({
-      name: 'film',
-      id: film.id, 
-      params: { film }
-    })
+
+  watch: {
+    currentFilmPage() { 
+      const begin = this.filmsOnOnePage[0];
+      const end = this.filmsOnOnePage[1];
+      this.filmStore.filterRange = [begin, end];
+    }    
   }
 }
 </script>
