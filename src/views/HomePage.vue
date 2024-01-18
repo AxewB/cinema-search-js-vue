@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
-    <v-sheet class="bg-transparent" width="1400px">
+    <v-sheet class="bg-transparent" width="1200px">
       <NavigationBar/>
       <!-- featured film -->
       <v-img class="ma-5 d-flex rounded-lg "
@@ -48,10 +48,10 @@
               single-line
               label="Search"
               density="compact"
-              v-model="filteringSettings.name"
+              v-model="localFilteringSettings.name"
               @update:model-value="resetPage"/>
 
-              <VSelect v-model="filteringSettings.year"
+              <VSelect v-model="localFilteringSettings.year"
                         class="mr-5"
                         hide-details
                         label="Year"
@@ -59,7 +59,7 @@
                         :items="filmStore.filmsYearRange"
                         density="compact"
                         @update:model-value="resetPage"/>
-              <VSlider v-model="filteringSettings.length"
+              <VSlider v-model="localFilteringSettings.length"
                         class="mr-5"
                         hide-details
                         thumb-label
@@ -68,7 +68,7 @@
                         :max="200"
                         :step="1"
                         @update:model-value="resetPage"/>
-              <VSlider v-model="filteringSettings.rating"
+              <VSlider v-model="localFilteringSettings.rating"
                         class="mr-5"
                         hide-details
                         thumb-label
@@ -77,6 +77,7 @@
                         :max="10"
                         :step="1"
                         @update:model-value="resetPage"/>
+              <v-btn color="accent" variant="flat" @click="acceptFilters()">Accept</v-btn>
 
 
           <!-- list itself -->
@@ -90,7 +91,7 @@
                             justify-start"
                       rounded
                       density="compact">
-            <div class="mr-5 text-body-1" >Сортировать по:</div>
+            <div class="mr-5 text-body-1 text-disabled" >Сортировать по</div>
             <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
               <v-btn class="mr-5 text-body-1"
                       @click="filmStore.sortBy = 'name'"
@@ -143,40 +144,34 @@
                           flex-wrap
                           justify-space-around
                           mt-5">
-            <v-hover v-for="film in filmsPageList" :key="film.id + filmStore.sortBy + filmStore.sortDirection"
-                    v-slot="{ isHovering, props }"
-                    >
-
-              <v-card v-bind="props"
-                      :width="tileSize[currentTileSize]"
-                      class="mr-2 ml-2 mb-5"
-                      :elevation="isHovering ? 10 : 0"
-                      @click="moveToFilm(film)"
-                      border>
-                <v-img :src="film.poster.previewUrl">
-                  <v-overlay
-                  :model-value="isHovering"
-                  contained
-                  scrim="#000">
-                    <v-sheet class="pa-2 text-justify bg-transparent">
-                      {{ film.shortDescription }}
-                    </v-sheet>
-                  </v-overlay>
-                </v-img>
-                <v-card-title >{{film.name}}</v-card-title>
-                <v-card-text class="text-caption text-disabled d-flex flex-row align-center justify-space-between">
-                  {{film.year}} 
-                  <v-rating
-                    readonly
-                    :length="5"
-                    :size="24"
-                    :model-value="film.rating.kp / 2"
-                    active-color="primary"
-                  />
-                </v-card-text>
-
-              </v-card>
-            </v-hover>
+            <v-card v-for="film in filmsPageList" :key="film.id + filmStore.sortBy + filmStore.sortDirection"
+                    :width="tileSize[currentTileSize]"
+                    class="mr-2 ml-2 mb-5"
+                    :elevation="isHovering ? 10 : 0"
+                    @click="moveToFilm(film)">
+              <v-img :src="film.poster.previewUrl" >
+                <v-sheet class="bg-transparent d-flex flex-row justify-end"  width="100%" >
+                  <v-btn rounded="0" icon>
+                    <VIcon icon="mdi-bookmark"/>
+                  </v-btn>
+                  <v-btn rounded="0" icon>
+                    <VIcon icon="mdi-heart"/>
+                  </v-btn>
+                </v-sheet>
+              </v-img>
+              <v-card-title >{{film.name}}</v-card-title>
+              <v-card-text class="text-caption text-disabled d-flex flex-row align-center justify-space-between">
+                {{film.year}} 
+                <v-rating
+                  readonly
+                  :length="5"
+                  :size="24"
+                  :model-value="film.rating.kp / 2"
+                  active-color="primary"
+                />
+              </v-card-text>
+            </v-card>
+            
 
           </v-sheet>
         </v-sheet>
@@ -202,10 +197,16 @@ export default {
       tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
       currentTileSize: 'standart',
       tilesOnOnePage: {'small': 24, 'standart': 18, 'large': 15},
+      localFilteringSettings: {
+        rating: 0,
+        name: '',
+        year: null,
+        length: 0
+      }
     }
   },
   computed: {
-    ...mapState(useFilmStore, ['filteringSettings', 'sortBy', 'featuredFilm']),
+    ...mapState(useFilmStore, ['sortBy', 'featuredFilm']),
     ...mapStores(useFilmStore),
     featuredFilmPoster () {
       return this.featuredFilm.poster.url;
@@ -232,15 +233,23 @@ export default {
     resetPage() {
       this.currentFilmPage = 1
     },
+    addFilmToFavourites(id) {
+      this.userStore.toggleFilmInFavourites(id) 
+    },
     moveToFilm(film) {
       this.$router.push({
         name: 'film',
         params: { currentFilm: film, id: film.id }
       })
     },
-  },
-  beforeMount() {
-    this.filmStore.filmsLoad();
+    acceptFilters() {
+      this.filmStore.filteringSettings = {
+        rating: this.localFilteringSettings.rating,
+        name: this.localFilteringSettings.name,
+        year: this.localFilteringSettings.year,
+        length: this.localFilteringSettings.length
+      }
+    }
   },
 
   watch: {
