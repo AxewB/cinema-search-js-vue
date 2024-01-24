@@ -144,13 +144,13 @@
                           flex-wrap
                           justify-space-around
                           mt-5">
-            <v-card v-for="film in filmsPageList" 
-                    :key="film.id + filmStore.sortBy + filmStore.sortDirection">
+            <v-sheet v-for="film in filmsPageList" 
+                    :key="film.id + filmStore.sortBy + filmStore.sortDirection"
+                    class="bg-transparent">
               <FilmCard :film="film"
                         :cardWidth="tileSize[currentTileSize]"
-                        @cardClick="moveToFilm(film)"/>
-            </v-card>
-
+                        :tileSize="currentTileSize"/>
+            </v-sheet>
           </v-sheet>
         </v-sheet>
       </v-sheet>
@@ -176,7 +176,7 @@ export default {
       currentFilmPage: 1,
       tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
       currentTileSize: 'standart',
-      tilesOnOnePage: {'small': 24, 'standart': 18, 'large': 15},
+      tilesOnOnePage: {'small': 36, 'standart': 25, 'large': 16},
       localFilteringSettings: {
         rating: 0,
         name: '',
@@ -198,7 +198,7 @@ export default {
       return this.featuredFilm.description;
     },
     filmsPageList() {
-      return this.filmStore.sortedNFilteredByField
+      return this.filmStore.sortedNFilteredByFieldRange
     },
     filmsOnOnePage() {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
@@ -213,15 +213,6 @@ export default {
     resetPage() {
       this.currentFilmPage = 1
     },
-    addFilmToFavourites(id) {
-      this.userStore.toggleFilmInFavourites(id) 
-    },
-    moveToFilm(film) {
-      this.$router.push({
-        name: 'film',
-        params: { currentFilm: film, id: film.id }
-      })
-    },
     acceptFilters() {
       this.filmStore.filteringSettings = {
         rating: this.localFilteringSettings.rating,
@@ -229,14 +220,21 @@ export default {
         year: this.localFilteringSettings.year,
         length: this.localFilteringSettings.length
       }
+    },
+    changePageSettings() {
+      const begin = this.filmsOnOnePage[0];
+      const end = this.filmsOnOnePage[1];
+      this.filmStore.filterRange = [begin, end];
     }
   },
 
   watch: {
+    currentTileSize() {
+      this.resetPage()
+      this.changePageSettings()
+    },
     currentFilmPage() { 
-      const begin = this.filmsOnOnePage[0];
-      const end = this.filmsOnOnePage[1];
-      this.filmStore.filterRange = [begin, end];
+      this.changePageSettings()
     }    
   }
 }

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useUserStore } from './userStore';
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max)
@@ -14,7 +15,7 @@ export const useFilmStore = defineStore('film', {
       year: null,
       length: 0
     },
-    filterRange: [0, 18],
+    filterRange: [0, 25],
     sortBy: 'name', // name, rating, length, year
     sortDirection: 'ascending',
   }),
@@ -41,6 +42,12 @@ export const useFilmStore = defineStore('film', {
       const result = this.filteredFilms.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
       if (state.sortDirection === 'descending')
         result.reverse();
+      return result
+    },
+    sortedNFilteredByFieldRange(state){
+      const result = this.filteredFilms.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
+      if (state.sortDirection === 'descending')
+        result.reverse();
       return result.slice(state.filterRange[0], state.filterRange[1])
     },
     filmsYearRange(state) {
@@ -56,6 +63,29 @@ export const useFilmStore = defineStore('film', {
         rangeArray.push(i)
       
       return rangeArray
+    },
+
+    favouriteFilms(state) {
+      const user = useUserStore();
+      const userFavourites = user.favourites;
+      let result = this.films.filter((el) => {
+        return userFavourites.some((fav) => {
+          return el.id === fav
+        })
+      })
+
+      result = result.filter((film) =>
+          film.name.includes(state.filteringSettings.name) &&
+          (state.filteringSettings.rating ? film.rating.kp >= state.filteringSettings.rating : true) &&
+          (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
+          (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
+        )
+      result = result.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
+
+      if (state.sortDirection === 'descending')
+        result.reverse();
+
+      return result
     }
   },
   actions: {
