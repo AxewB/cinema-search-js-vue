@@ -144,34 +144,12 @@
                           flex-wrap
                           justify-space-around
                           mt-5">
-            <v-card v-for="film in filmsPageList" :key="film.id + filmStore.sortBy + filmStore.sortDirection"
-                    :width="tileSize[currentTileSize]"
-                    class="mr-2 ml-2 mb-5"
-                    :elevation="isHovering ? 10 : 0"
-                    @click="moveToFilm(film)">
-              <v-img :src="film.poster.previewUrl" >
-                <v-sheet class="bg-transparent d-flex flex-row justify-end"  width="100%" >
-                  <v-btn rounded="0" icon>
-                    <VIcon icon="mdi-bookmark"/>
-                  </v-btn>
-                  <v-btn rounded="0" icon>
-                    <VIcon icon="mdi-heart"/>
-                  </v-btn>
-                </v-sheet>
-              </v-img>
-              <v-card-title >{{film.name}}</v-card-title>
-              <v-card-text class="text-caption text-disabled d-flex flex-row align-center justify-space-between">
-                {{film.year}} 
-                <v-rating
-                  readonly
-                  :length="5"
-                  :size="24"
-                  :model-value="film.rating.kp / 2"
-                  active-color="primary"
-                />
-              </v-card-text>
+            <v-card v-for="film in filmsPageList" 
+                    :key="film.id + filmStore.sortBy + filmStore.sortDirection">
+              <FilmCard :film="film"
+                        :cardWidth="tileSize[currentTileSize]"
+                        @cardClick="moveToFilm(film)"/>
             </v-card>
-            
 
           </v-sheet>
         </v-sheet>
@@ -184,12 +162,14 @@
 <script>
 import { mapStores, mapState } from 'pinia';
 import {useFilmStore} from '@/store/filmStore'
-import NavigationBar from './NavigationBar.vue';
+import NavigationBar from '@/components/NavigationBar.vue';
+import FilmCard from '@/components/FilmCard.vue';
 
 export default {
   name: 'HomePage',
   components: {
-    NavigationBar
+    NavigationBar,
+    FilmCard
   },
   data() {
     return {
