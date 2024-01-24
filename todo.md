@@ -5,3 +5,5 @@
 - move home page data about pages and number of films which should display on page to separate store AND fix filmsFromRange function after that
 - make top bar as separate component (to use it on recommendations page too)
 - make documentation to algorithms (if i will do them)
+- fix link to film from film card
+- make working link to "feeling lucky" button in the navigation bar
