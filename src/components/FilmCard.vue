@@ -7,7 +7,7 @@
             v-bind="props"
             rounded="lg">
       <v-img  :src="film.poster.previewUrl"
-              >
+              @click="moveToFilm(film)">
         <v-sheet  class="bg-transparent 
                         d-flex 
                         flex-column" 
