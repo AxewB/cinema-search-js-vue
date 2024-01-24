@@ -8417,5 +8417,8 @@ export const useFilmStore = defineStore('film', {
       }
       this.films = this.data.docs;
     },
+    getRandomFilmId() {
+       return getRandomInt(this.films.length)
+    }
   }
 })
