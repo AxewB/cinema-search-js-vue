@@ -77,7 +77,7 @@ export const useUserStore = defineStore("user", {
             "Фродо Бэггинс отправляется спасать Средиземье. Первая часть культовой фэнтези-трилогии Питера Джексона",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Смотрю",
       },
       370: {
         favourite: true,
@@ -176,7 +176,7 @@ export const useUserStore = defineStore("user", {
             "Девочка должна спасти своих родителей в мире духов. Шедевр Хаяо Миядзаки, фаворит анимационных рейтингов мира",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Смотрю",
       },
       430: {
         favourite: false,
@@ -308,7 +308,7 @@ export const useUserStore = defineStore("user", {
             "Огр-мизантроп спасает принцессу, чтобы вернуть свое болото. Революционная анимация о том, что красота — внутри",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Смотрю",
       },
       41520: {
         favourite: false,
@@ -410,7 +410,7 @@ export const useUserStore = defineStore("user", {
             "Американцы знакомятся с Данилой Багровым и узнают, в чем сила. Сиквел о герое времени с мощным рок-саундтреком\n",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Просмотрено",
       },
       88173: {
         favourite: false,
@@ -488,7 +488,7 @@ export const useUserStore = defineStore("user", {
             "Девушка-киборг пытается раскрыть тайну своего происхождения. Боевик от Джеймса Кэмерона и Роберта Родригеса",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Заброшено",
       },
       251733: {
         favourite: true,
@@ -566,7 +566,7 @@ export const useUserStore = defineStore("user", {
             "Парализованный морпех становится мессией для жителей Пандоры. Самый кассовый фильм в истории кино\n",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Заброшено",
       },
       420923: {
         favourite: true,
@@ -622,7 +622,7 @@ export const useUserStore = defineStore("user", {
             "Великий сыщик преследует воскресшего из мертвых чернокнижника. Бодрый детектив Гая Ричи, первая часть франшизы",
           releaseYears: [],
         },
-        status: "plans",
+        status: "Заброшено",
       },
       535341: {
         favourite: true,
@@ -700,7 +700,7 @@ export const useUserStore = defineStore("user", {
             "Аристократ на коляске нанимает в сиделки бывшего заключенного. Искрометная французская комедия с Омаром Си",
           releaseYears: [],
         },
-        status: "plans",
+        status: "В планах",
       },
       835086: {
         favourite: true,
@@ -778,83 +778,132 @@ export const useUserStore = defineStore("user", {
             "Автоконструктор и строптивый гонщик против непобедимых конкурентов. Биографическая драма о любви к скорости",
           releaseYears: [],
         },
-        status: "plans",
+        status: "В планах",
       },
     },
-    lists: ['all', "watching", "plans", "completed", "abandoned"],
+    lists: ['Все', "Смотрю", "В планах", "Просмотрено", "Заброшено"],
 
     filterSettings: {
-      listName: 'plans',
+      listName: 'Все',
       sortBy: 'name',
       sortDirection: 'ascending',
       onlyFavourites: false
     }
   }),
   getters: {
-    favouriteFilms(state) {
-      let result = [];
-      for (let film in state.films) {
-        if (film.favourite === true) result.push(film.film);
-      }
-      return result;
-    },
-
     isExists: (state) => {
       return (id) => {
         return !!state.films[id];
       };
     },
+    /**
+     * Проверяет, находится ли фильм с заданным id в избранных.
+     *
+     * @param {Object} state - Состояние
+     * @param {number} id - Идентификатор фильма
+     * @returns {boolean} - true, если фильм находится в избранных, в противном случае - false
+     */
     isInFavourites: (state) => {
       return (id) => {
-        if (state.films[id]) {
-          return state.films[id].favourite;
-        } else return false;
+        return state.films[id] ? state.films[id].favourite : false;
       };
     },
+
+    /** 
+     * Возвращает массив фильмов, если фильтр "Только избранные" включен, 
+     * а также фильтрует по выбранному списку.
+     * 
+     * @param {Object} state - Состояние приложения.
+     * @returns {Array} - Отфильтрованный массив фильмов.
+     */
     filmsArray(state) {
       let result = [];
       if (state.filterSettings.onlyFavourites)
-        for (const [key, value] of Object.entries(state.films)){
+        for (const value of Object.values(state.films)){
           if (value.favourite){
-            result.push(value.film)
+            if (state.filterSettings.listName !== 'Все') {
+              if (value.status === state.filterSettings.listName){
+                result.push(value.film)            
+              }
+            }
+            else {
+              result.push(value.film)            
+            }
           }
         }
       else {
-        for (const [key, value] of Object.entries(state.films)){
-          result.push(value.film)
+        for (const value of Object.values(state.films)){
+          if (state.filterSettings.listName !== 'Все') {
+            if (value.status === state.filterSettings.listName){
+              result.push(value.film)            
+            }
+          }
+          else {
+            result.push(value.film)            
+          }
         }
       }
       return result
     },
+    /**
+     * Фильтрует фильмы в соответствии с настройками фильтрации в состоянии.
+     * 
+     * @param {Object} state - Состояние 
+     * @returns {Array} - Отфильтрованный массив фильмов.
+     */
     filteredFilms(state) {
+      const {sortBy, sortDirection} = state.filterSettings;
       const result = this.filmsArray.sort((a,b) => 
-        (a[state.filterSettings.sortBy] > b[state.filterSettings.sortBy]) ? 1 : 
-        ((b[state.filterSettings.sortBy] > a[state.filterSettings.sortBy]) ? -1 : 0)
+        (a[sortBy] > b[sortBy]) ? 1 : 
+        ((b[sortBy] > a[sortBy]) ? -1 : 0)
       );
-      if (state.filterSettings.sortDirection === 'descending'){
+      if (sortDirection === 'descending'){
         result.reverse();
       }
-      
-      
       return result
     },
   },
   actions: {
+    /**
+     * Добавляет фильм в профиль пользователя.
+     * 
+     * @param {string} id - Идентификатор фильма.
+     * @param {string} film - Объект с информацией о фильме.
+     * @param {boolean} favourite - Флаг, является ли фильм избранным (по умолчанию false).
+     * @param {string} commentary - Комментарий к фильму (по умолчанию "").
+     */
     addFilmToProfile(id, film, favourite = false, commentary = "") {
       this.films[id] = {
-        favourite: favourite,
-        commentary: commentary,
-        film: film,
-        status: "plans",
+        favourite,
+        commentary,
+        film,
+        status: "В планах",
       };
     },
+    /**
+     * Удаляет фильм из профиля по его идентификатору.
+     * @param {string} id - Идентификатор фильма.
+     */
     removeFilmFromProfile(id) {
       delete this.films[id];
     },
+    /**
+     * Переключает избранное для фильма с указанным идентификатором.
+     * 
+     * Если фильм с указанным идентификатором уже существует, то меняет его статус "избранного".
+     * 
+     * Если фильм с указанным идентификатором не существует, 
+     * то добавляет его в профиль и устанавливает статус "избранного".
+     * 
+     * @param {string} id - Идентификатор фильма
+     * @param {Object} film - Объект фильма
+     */
     toggleFilmFavourite(id, film = null) {
       if (this.films[id]) {
         this.films[id].favourite = !this.films[id].favourite;
-      } else this.addFilmToProfile(id, film, true);
+      } else {
+        this.addFilmToProfile(id, film, true);
+      }
     },
   },
 });
