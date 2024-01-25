@@ -17,7 +17,7 @@
                      variant="plain" >Случайный фильм</v-btn>
           </v-sheet>
           <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-            <v-btn v-if="this.$route.name !== 'film'" rounded variant="plain" icon="mdi-account" :to="{name: 'favourites'}"/>
+            <v-btn rounded variant="plain" icon="mdi-account" :to="{name: 'favourites'}"/>
           </v-sheet>
         </v-toolbar>
       </v-sheet>
