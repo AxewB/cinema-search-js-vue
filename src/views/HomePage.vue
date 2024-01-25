@@ -49,7 +49,8 @@
               label="Search"
               density="compact"
               v-model="localFilteringSettings.name"
-              @update:model-value="resetPage"/>
+              @update:model-value="resetPage"
+              variant="outlined"/>
 
               <VSelect v-model="localFilteringSettings.year"
                         class="mr-5"
@@ -58,7 +59,8 @@
                         clearable
                         :items="filmStore.filmsYearRange"
                         density="compact"
-                        @update:model-value="resetPage"/>
+                        @update:model-value="resetPage"
+                        variant="outlined"/>
               <VSlider v-model="localFilteringSettings.length"
                         class="mr-5"
                         hide-details
