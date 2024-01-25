@@ -7,3 +7,4 @@
 - make documentation to algorithms (if i will do them)
 - fix link to film from film card
 - make working link to "feeling lucky" button in the navigation bar
+- add button to the film page to add it to the list 
