@@ -61,29 +61,6 @@ export const useFilmStore = defineStore('film', {
       
       return rangeArray
     },
-
-    favouriteFilms(state) {
-      const user = useUserStore();
-      const userFavourites = user.favourites;
-      let result = this.films.filter((el) => {
-        return userFavourites.some((fav) => {
-          return el.id === fav
-        })
-      })
-
-      result = result.filter((film) =>
-          film.name.includes(state.filteringSettings.name) &&
-          (state.filteringSettings.rating ? film.rating.kp >= state.filteringSettings.rating : true) &&
-          (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
-          (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
-        )
-      result = result.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
-
-      if (state.sortDirection === 'descending')
-        result.reverse();
-
-      return result
-    }
   },
   actions: {
     filmsLoad() {
