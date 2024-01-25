@@ -51,15 +51,14 @@
               @update:model-value="resetPage"
               variant="outlined"/>
 
-              <VSelect v-model="localFilteringSettings.year"
+              <v-combobox v-model="localFilteringSettings.year"
                         class="mr-5"
                         hide-details
                         label="Год"
-                        clearable
                         :items="filmStore.filmsYearRange"
                         density="compact"
-                        @update:model-value="resetPage"
-                        variant="outlined"/>
+                        variant="outlined"
+                        @update:model-value="resetPage"/>
               <VSlider v-model="localFilteringSettings.length"
                         class="mr-5"
                         hide-details
