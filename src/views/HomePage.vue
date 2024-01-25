@@ -3,7 +3,7 @@
     <v-sheet class="bg-transparent" width="1200px">
       <NavigationBar/>
       <!-- featured film -->
-      <v-img class="ma-5 d-flex rounded-lg "
+      <v-img class="d-flex rounded-lg "
               v-bind=props
               :src="featuredFilmPoster"
               cover
@@ -28,7 +28,7 @@
           </v-img>
         </div>
       </v-img>
-
+      <VDivider class="ma-2"></VDivider>
       <!-- films list -->
       <v-sheet class="bg-transparent d-flex flex-row pa-5 pt-0" width="100%">
         <v-sheet class="flex-grow-1 pa-2" rounded>
