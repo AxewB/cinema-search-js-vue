@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
-    <v-sheet class="" width="1200px">
+    <v-sheet class="bg-transparent" width="1200px">
       <NavigationBar/>
       <v-toolbar class="mt-2
                             pa-2
@@ -10,26 +10,32 @@
                             justify-start"
                       rounded
                       density="compact">
-            <div class="mr-5 text-body-1 text-disabled" >Сортировать по</div>
             <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'name'"
-                      :active="sortBy === 'name'">Имени</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'year'"
-                      :active="sortBy === 'year'">Году</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'movieLength'"
-                      :active="sortBy === 'movieLength'">Длительности</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'filmCritics'"
-                      :active="sortBy === 'filmCritics'">Рейтингу</v-btn>
+              <v-btn-toggle v-model="userStore.filterSettings.sortBy" 
+                            mandator border divided>
+                <v-btn class="text-body-1" value='name'>Имя</v-btn>
+                <v-btn class="text-body-1" value='year'>Год</v-btn>
+                <v-btn class="text-body-1" value='movieLength'>Длительность</v-btn>
+                <v-btn class="text-body-1" value='filmCritics'>Рейтинг</v-btn>
+              </v-btn-toggle>
             </div>
+            <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
+                            border
+                            class="mr-2">
+              <v-btn icon :value="true">
+                <VTooltip text="Только избранное" activator="parent" location="top"/>
+                <VIcon icon="mdi-heart"/>
+              </v-btn>
+            </v-btn-toggle>
             <div>
-              <v-btn-toggle v-model="filmStore.sortDirection"
-                          border
-                          mandatory
-                          class="mr-2">
+              
+
+              <!-- <VTooltip text="Only favourites" activator="parent" location="top"/>
+                <VIcon icon="mdi-heart"/> -->
+              <v-btn-toggle v-model="userStore.filterSettings.sortDirection"
+                            border
+                            mandatory
+                            class="mr-2">
                 <v-btn icon value="ascending">
                   <VTooltip text="Ascending" activator="parent" location="top"/>
                   <VIcon icon="mdi-sort-ascending"/>
@@ -56,16 +62,17 @@
                 </v-btn>
               </v-btn-toggle>
             </div>
-          </v-toolbar>
-          <v-sheet class="d-flex flox-row flex-wrap justify-lg-space-around mt-2">
-            <v-sheet v-for="film in filmsPageList" 
-                    :key="film.id + filmStore.sortBy + filmStore.sortDirection + 'favourite' + Date.now()"
-                    class="bg-transparent">
-              <FilmCard :film="film"
-                        :cardWidth="tileSize[currentTileSize]"
-                        :tileSize="currentTileSize"/>
-            </v-sheet>
-          </v-sheet>
+      </v-toolbar>
+      
+      <v-sheet class="d-flex flox-row flex-wrap justify-lg-space-around mt-2 pt-2">
+        <v-sheet v-for="film in filmsPageList" 
+                :key="film.id + userStore.filterSettings.sortBy + userStore.filterSettings.sortDirection + 'favourite' + Date.now()"
+                class="bg-transparent">
+          <FilmCard :film="film"
+                    :cardWidth="tileSize[currentTileSize]"
+                    :tileSize="currentTileSize"/>
+        </v-sheet>
+      </v-sheet>
           
           
     </v-sheet>
@@ -76,7 +83,7 @@
 <script>
 import NavigationBar from '@/components/NavigationBar.vue';
 import { mapStores } from 'pinia';
-import { useFilmStore } from '@/store/filmStore';
+import { useUserStore} from '@/store/userStore';
 import FilmCard from '@/components/FilmCard.vue';
 export default {
   name: "FavouritesPage",
@@ -92,12 +99,12 @@ export default {
     FilmCard
   },
   computed: {
-    ...mapStores(useFilmStore),
+    ...mapStores(useUserStore),
     filmsPageList() {
-      return this.filmStore.favouriteFilms
+      return this.userStore.filteredFilms
     },
     sortBy() {
-      return this.filmStore.sortBy
+      return this.userStore.filterSettings.sortBy
     }
   }
 }

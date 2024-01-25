@@ -5,12 +5,16 @@
           <v-sheet class="bg-transparent" width="33%"/>
           <v-sheet class="bg-transparent d-flex justify-center " width="33%">
             <v-btn  :to="{name: 'home'}" 
-                    class="ml-2 mr-2" variant="plain">Home</v-btn>
+                     variant="plain">Главная</v-btn>
+            <VDivider vertical class="ml-2 mr-2"/>
             <v-btn  :to="{name: 'recommendations'}" 
-                    class="ml-2 mr-2" variant="plain">Recommendations</v-btn>
+                     variant="plain">Рекомендации</v-btn>
+            <VDivider v-if="this.$route.name === 'home'" 
+                      vertical 
+                      class="ml-2 mr-2"/>
             <v-btn  v-if="this.$route.name === 'home'" 
                     @click="moveToRandomFilmPage()" 
-                    class="ml-2 mr-2" variant="plain">Feeling lucky</v-btn>
+                     variant="plain" >Случайный фильм</v-btn>
           </v-sheet>
           <v-sheet class="bg-transparent d-flex justify-end" width="33%">
             <v-btn v-if="this.$route.name !== 'film'" rounded variant="plain" icon="mdi-account" :to="{name: 'favourites'}"/>
