@@ -11,7 +11,7 @@
         <div class="bg-blur featured-film-overlay pa-5 rounded-lg d-flex flex-row">
 
             <v-sheet  class="bg-transparent">
-              <div class="text-h4 text-disabled">Featured Film</div>
+              <div class="text-h4 text-disabled">Рекомендуем</div>
               <VDivider class="mb-3"/>
               <div class="text-h2 mb-5">{{ featuredFilmName }}</div>
               <div class="text-body-1 text-disabled"
@@ -19,7 +19,7 @@
               {{ featuredFilmDescription }}
 
               </div>
-              <v-btn class="mt-5" variant="outlined" size="large">WATCH NOW</v-btn>
+              <v-btn class="mt-5" variant="outlined" size="large" :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">СМОТРЕТЬ</v-btn>
             </v-sheet>
         <v-img class="rounded-lg ma-2"
               :src="featuredFilmPoster"
@@ -44,9 +44,8 @@
             <VTextField
               class="mr-5 flex-grow-1"
               hide-details
-              prepend-icon="mdi-magnify"
               single-line
-              label="Search"
+              label="Название"
               density="compact"
               v-model="localFilteringSettings.name"
               @update:model-value="resetPage"
@@ -55,7 +54,7 @@
               <VSelect v-model="localFilteringSettings.year"
                         class="mr-5"
                         hide-details
-                        label="Year"
+                        label="Год"
                         clearable
                         :items="filmStore.filmsYearRange"
                         density="compact"
@@ -65,7 +64,7 @@
                         class="mr-5"
                         hide-details
                         thumb-label
-                        label="Length"
+                        label="Длительность"
                         :min="0"
                         :max="200"
                         :step="1"
@@ -74,12 +73,12 @@
                         class="mr-5"
                         hide-details
                         thumb-label
-                        label="Rating"
+                        label="Оценка"
                         :min="1"
                         :max="10"
                         :step="1"
                         @update:model-value="resetPage"/>
-              <v-btn color="accent" variant="flat" @click="acceptFilters()">Accept</v-btn>
+              <v-btn color="accent" variant="flat" @click="acceptFilters()">Принять</v-btn>
 
 
           <!-- list itself -->
@@ -93,24 +92,19 @@
                             justify-start"
                       rounded
                       density="compact">
-            <div class="mr-5 text-body-1 text-disabled" >Сортировать по</div>
             <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'name'"
-                      :active="sortBy === 'name'">Имени</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'year'"
-                      :active="sortBy === 'year'">Году</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'movieLength'"
-                      :active="sortBy === 'movieLength'">Длительности</v-btn>
-              <v-btn class="mr-5 text-body-1"
-                      @click="filmStore.sortBy = 'filmCritics'"
-                      :active="sortBy === 'filmCritics'">Рейтингу</v-btn>
+              <v-btn-toggle v-model="filmStore.sortBy" 
+                            mandatory 
+                            border 
+                            divided>
+                <v-btn class="text-body-1" value='name'>Имя</v-btn>
+                <v-btn class="text-body-1" value='year'>Год</v-btn>
+                <v-btn class="text-body-1" value='movieLength'>Длительность</v-btn>
+                <v-btn class="text-body-1" value='filmCritics'>Рейтинг</v-btn>
+              </v-btn-toggle>
             </div>
             <div>
               <v-btn-toggle v-model="filmStore.sortDirection"
-                          border
                           mandatory
                           class="mr-2">
                 <v-btn icon value="ascending">
