@@ -76,9 +76,9 @@
               </v-sheet>
               
               <VDivider class="ma-2"/>
-              <v-list rounded >
-                <v-list-subheader>WHERE TO WATCH</v-list-subheader>
-                <v-list max-height="250px" class="overflow-auto">
+              <v-list v-if="film.watchability.items" rounded >
+                <v-list-subheader>ГДЕ ПОСМОТРЕТЬ</v-list-subheader>
+                <v-list  max-height="250px" class="overflow-auto">
                   <v-list-item v-for="cinema in film.watchability.items" :key="cinema._id" :href="cinema.url" class="mb-2 d-flex align-center" size="x-large" icon>
                     <VAvatar :image="cinema.logo.url" size="30" class="mr-2"/>
                     {{ cinema.name }}
@@ -107,11 +107,11 @@
               </v-sheet>
               
               <VDivider class="ma-2"/>
-              <filmInfoBar v-if="film.year" :title="'Year'" :data="film.year.toString()"/>
-              <filmInfoBar v-if="film.alternativeName" :title="'Alternative name'" :data="film.alternativeName"/>
-              <filmInfoBar v-if="film.movieLength" :title="'Length'" :data="film.movieLength.toString()"/>
-              <filmInfoBar v-if="film.type" :title="'Type'" :data="film.type"/>
-              <filmInfoBar v-if="otherNames" :title="'Other names'" :data="otherNames"/>
+              <filmInfoBar v-if="film.year" :title="'Год'" :data="film.year.toString()"/>
+              <filmInfoBar v-if="film.alternativeName" :title="'Альтернативное название'" :data="film.alternativeName"/>
+              <filmInfoBar v-if="film.movieLength" :title="'Длительность (мин)'" :data="film.movieLength.toString()"/>
+              <filmInfoBar v-if="film.type" :title="'Тип фильма'" :data="film.type"/>
+              <filmInfoBar v-if="otherNames" :title="'Другие названия'" :data="otherNames"/>
             </v-sheet>
           </v-sheet>
         </v-sheet>
