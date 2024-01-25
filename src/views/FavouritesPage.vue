@@ -10,7 +10,7 @@
                             justify-start"
                       rounded
                       density="compact">
-            <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
+            <v-sheet class="mr-5 d-flex flex-row justify-start bg-transparent">
               <v-btn-toggle v-model="userStore.filterSettings.sortBy" 
                             mandator border divided>
                 <v-btn class="text-body-1" value='name'>Имя</v-btn>
@@ -18,7 +18,14 @@
                 <v-btn class="text-body-1" value='movieLength'>Длительность</v-btn>
                 <v-btn class="text-body-1" value='filmCritics'>Рейтинг</v-btn>
               </v-btn-toggle>
-            </div>
+            </v-sheet>
+            <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
+              <VSelect  :items="userStore.lists" 
+                        v-model="userStore.filterSettings.listName" 
+                        hide-details
+                        density="compact"
+                        variant="outlined"/>
+            </v-sheet>
             <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
                             border
                             class="mr-2">
