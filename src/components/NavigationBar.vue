@@ -1,37 +1,44 @@
 <template>
-  <v-sheet class="background-transparent" width="100%">
+  <v-sheet class="bg-transparent" width="100%">
         <v-toolbar rounded
-                  elevation="10"
                   class="d-flex bg-transparent">
           <v-sheet class="bg-transparent" width="33%"/>
-          <v-sheet class="bg-transparent d-flex justify-center" width="33%">
-            <router-link :to="{name: 'home'}">
-              <v-btn exact>Home</v-btn>
-            </router-link>
-            <router-link :to="{name: 'recommendations'}">
-              <v-btn exact>Recommendations</v-btn>
-            </router-link>
-            <router-link>
-              <v-btn>Feeling lucky</v-btn>
-            </router-link>
+          <v-sheet class="bg-transparent d-flex justify-center " width="33%">
+            <v-btn  :to="{name: 'home'}" 
+                    class="ml-2 mr-2">Home</v-btn>
+            <v-btn  :to="{name: 'recommendations'}" 
+                    class="ml-2 mr-2">Recommendations</v-btn>
+            <v-btn  v-if="this.$route.name === 'home'" 
+                    @click="moveToRandomFilmPage()" 
+                    class="ml-2 mr-2">Feeling lucky</v-btn>
           </v-sheet>
           <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-            <router-link :to="{name: 'favourites'}" exact>
-              <v-btn icon="mdi-heart" />
-            </router-link>
+            <v-btn icon="mdi-heart" :to="{name: 'favourites'}"/>
           </v-sheet>
         </v-toolbar>
       </v-sheet>
 </template>
 
 <script>
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useFilmStore } from '@/store/filmStore';
+import { getRandomInt } from '@/scripts/myUtilities'
 export default {
   name: "NavigationBar",
   methods: {
-    ...mapActions(useFilmStore, ['getRandomFilmId'])
-  }
+    ...mapActions(useFilmStore, ['getRandomFilmId']),
+    moveToRandomFilmPage() {
+    const filmId = getRandomInt(this.filmsCount)
+    this.$router.push({
+      name: 'film',
+      params: {id: this.films[filmId].id }
+    })
+  },
+  },
+  computed: {
+    ...mapState(useFilmStore, ['filmsCount', 'films'])
+  },
+  
 }
   
 </script>
