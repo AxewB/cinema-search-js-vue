@@ -19,14 +19,11 @@
                           justify-end
                           pr-2"  
                    width="100%" >
-            <v-btn rounded="0" icon 
-                    @click="addFilmToFavourites(film.id)"
-                    :color="isInFavourites ? 'deep-purple-darken-1' : ''">
-              <VIcon icon="mdi-heart"/>
+            <v-btn v-if="isInFavourites" disabled rounded="0" icon 
+                    @click="addFilmToFavourites(film.id)">
+              <VIcon icon="mdi-heart" color="primary"/>
             </v-btn>
           </v-sheet>
-
-
         </v-sheet>
       </v-img>
       <v-card-title >{{film.name}}</v-card-title>
@@ -38,7 +35,12 @@
                           justify-space-between">
         {{film.year}} 
         <v-sheet v-if="tileSize === 'small'"
-                  class="text-mono text-body font-weight-black border pl-3 pr-3 pt-1 pb-1 rounded-lg">
+                  class="text-mono 
+                        text-body 
+                        font-weight-black 
+                        border 
+                        pl-3 pr-3 pt-1 pb-1 
+                        rounded-lg">
           {{ (film.rating.kp / 2).toFixed(1) }}
         </v-sheet>
         <VRating v-else
@@ -60,7 +62,7 @@ export default {
   name: "FilmCard",
   props: {
     cardWidth: {
-      type: Number,
+      type: String,
       required: true
     },
     film: {
@@ -76,18 +78,18 @@ export default {
     moveToFilm(film) {
       this.$router.push({
         name: 'film',
-        params: { currentFilm: film, id: film.id }
+        params: {id: film.id }
       })
     },
     addFilmToFavourites(id) {
-      this.userStore.toggleFilmInFavourites(id) 
+      this.userStore.toggleFilmFavourite(id) 
     },
   },
   
   computed: {
     ...mapStores(useUserStore),
     isInFavourites() {
-      return this.userStore.isExists(this.film.id)
+      return this.userStore.isInFavourites(this.film.id)
     },
   }
 }
