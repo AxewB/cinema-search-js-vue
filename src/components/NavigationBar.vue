@@ -1,19 +1,19 @@
 <template>
-  <v-sheet class="bg-transparent" width="100%">
+  <v-sheet class="bg-transparent" width="100%" rounded>
         <v-toolbar rounded
                   class="d-flex bg-transparent">
           <v-sheet class="bg-transparent" width="33%"/>
           <v-sheet class="bg-transparent d-flex justify-center " width="33%">
             <v-btn  :to="{name: 'home'}" 
-                    class="ml-2 mr-2">Home</v-btn>
+                    class="ml-2 mr-2" variant="plain">Home</v-btn>
             <v-btn  :to="{name: 'recommendations'}" 
-                    class="ml-2 mr-2">Recommendations</v-btn>
+                    class="ml-2 mr-2" variant="plain">Recommendations</v-btn>
             <v-btn  v-if="this.$route.name === 'home'" 
                     @click="moveToRandomFilmPage()" 
-                    class="ml-2 mr-2">Feeling lucky</v-btn>
+                    class="ml-2 mr-2" variant="plain">Feeling lucky</v-btn>
           </v-sheet>
           <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-            <v-btn icon="mdi-heart" :to="{name: 'favourites'}"/>
+            <v-btn v-if="this.$route.name !== 'film'" rounded variant="plain" icon="mdi-account" :to="{name: 'favourites'}"/>
           </v-sheet>
         </v-toolbar>
       </v-sheet>
