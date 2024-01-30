@@ -26,8 +26,8 @@
           </v-sheet>
         </v-sheet>
       </v-img>
-      <v-card-title >{{film.name}}</v-card-title>
-      <v-card-text class="text-caption 
+      <v-card-title v-if="showDetails" >{{film.name}}</v-card-title>
+      <v-card-text v-if="showDetails" class="text-caption 
                           text-disabled 
                           d-flex 
                           flex-row 
@@ -73,6 +73,10 @@ export default {
     tileSize: {
       type: String,
       required: true
+    },
+    showDetails: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
