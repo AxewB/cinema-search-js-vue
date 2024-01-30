@@ -9,11 +9,6 @@ const routes = [
 
   },
   {
-    path: '/recommendations',
-    name: 'recommendations',
-    component: () => import('../views/RecommendationsPage.vue')
-  },
-  {
     path: '/favourites',
     name: 'favourites',
     component: () => import('../views/FavouritesPage.vue')
