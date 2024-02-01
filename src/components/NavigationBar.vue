@@ -1,20 +1,24 @@
 <template>
-  <v-sheet class="bg-transparent" width="100%" rounded>
+  <v-sheet class="bg-transparent d-flex" width="100%" rounded>
         <v-toolbar rounded
-                  class="d-flex bg-transparent">
-          <v-sheet class="bg-transparent" width="33%"/>
-          <v-sheet class="bg-transparent d-flex justify-center " width="33%">
-            <v-btn  :to="{name: 'home'}" 
-                     variant="plain">Главная</v-btn>
-            <VDivider v-if="this.$route.name === 'home'" 
-                      vertical 
-                      class="ml-2 mr-2"/>
-            <v-btn  @click="moveToRandomFilmPage()" 
-                     variant="plain" >Случайный фильм</v-btn>
-                     
-          </v-sheet>
-          <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-            <v-btn rounded variant="tonal" icon="mdi-bookmark" :to="{name: 'favourites'}"/>
+                  class="d-flex bg-transparent pl-2 pr-2" width="100%">
+          <v-sheet class="flex-grow-1 d-flex bg-transparent justify-center align-center" width="100%">
+            <v-sheet class="bg-transparent" width="30%">
+              <slot name="start"></slot>
+            </v-sheet>
+            <v-sheet class="bg-transparent d-flex justify-center " width="40%">
+              <v-btn  :to="{name: 'home'}" 
+                      variant="plain">Главная</v-btn>
+              <VDivider v-if="this.$route.name === 'home'" 
+                        vertical 
+                        class="ml-2 mr-2"/>
+              <v-btn  @click="moveToRandomFilmPage()" 
+                      variant="plain" >Случайный фильм</v-btn>
+                      
+            </v-sheet>
+            <v-sheet class="bg-transparent d-flex justify-end" width="30%">
+              <v-btn rounded variant="tonal" icon="mdi-bookmark" :to="{name: 'favourites'}"/>
+            </v-sheet>
           </v-sheet>
         </v-toolbar>
       </v-sheet>
