@@ -57,7 +57,11 @@
         </template>
       </v-slider>
 
-      <v-btn color="accent" variant="flat" @click="acceptFilters()">Принять</v-btn>
+      <v-btn  color="accent" 
+              variant="flat" 
+              @click="acceptFilters()">
+        Принять
+      </v-btn>
     </v-toolbar>
 
     <v-toolbar class="mt-2
