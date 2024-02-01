@@ -16,7 +16,6 @@
         label="Название"
         density="compact"
         v-model="filmFilters.name"
-        @update:model-value="resetPage"
         variant="outlined"/>
 
       <v-combobox v-model="filmFilters.year"
@@ -25,8 +24,7 @@
                 label="Год"
                 :items="filmsYearRange"
                 density="compact"
-                variant="outlined"
-                @update:model-value="resetPage"/>
+                variant="outlined"/>
 
       <VSlider v-model="filmFilters.length"
                 class="mr-5"
@@ -35,8 +33,7 @@
                 label="Длительность"
                 :min="0"
                 :max="200"
-                :step="1"
-                @update:model-value="resetPage"/>
+                :step="1"/>
 
       <VSlider v-model="filmFilters.rating"
                 class="mr-5"
@@ -45,8 +42,7 @@
                 label="Оценка"
                 :min="1"
                 :max="10"
-                :step="1"
-                @update:model-value="resetPage"/>
+                :step="1"/>
 
       <v-btn color="accent" variant="flat" @click="acceptFilters()">Принять</v-btn>
 
@@ -62,7 +58,7 @@
                 rounded
                 density="compact">
       <div class="mr-5 flex-grow d-flex flex-row justify-start">
-        <v-btn-toggle v-model="sortByField" 
+        <v-btn-toggle v-model="sortBy" 
                       mandatory 
                       border 
                       divided
@@ -119,7 +115,7 @@
                     justify-space-around
                     mt-5">
       <v-sheet v-for="film in films" 
-              :key="film.id + Date.now()"
+              :key="film.id + film.name + $parent.name + sortBy + sortDirection + Date.now()"
               class="bg-transparent">
         <FilmCard :film="film"
                   :cardWidth="tileSize[currentTileSize]"
@@ -147,13 +143,6 @@ export default {
       required: true,
     },
     // список полей, по которым можно будет отсортировать список фильмов
-    // вид: 
-    // { 
-      // sort1: { 
-        // name: 'названиеДляОтображения', 
-        // value: 'value1' 
-      // } 
-    // }
     // условия сортировки будут передаваться через this.emit() в виде: { sort1: "value1", sort2: "value2" } 
     sortByFieldsList: {
       type: Object, 
@@ -165,7 +154,7 @@ export default {
       currentTileSize: 'standart',
       
       sortDirection: 'ascending',
-      sortByField: 'name',
+      sortBy: 'name',
       filmFilters: {
         name: '',
         year: null,
@@ -181,13 +170,17 @@ export default {
     acceptSorting() {
       this.$emit('sorted', {
         sortDirection: this.sortDirection, 
-        sortByField: this.sortByField
+        sortBy: this.sortBy
       })
     }
   },
   computed: {
     ...mapState(useFilmStore, ['filmsYearRange'])
-  } 
+  },
+  mounted() {
+    this.acceptFilters();
+    this.acceptSorting();
+  }
 }
 </script>
 
