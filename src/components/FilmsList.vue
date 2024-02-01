@@ -23,23 +23,39 @@
                   density="compact"
                   variant="outlined"/>
 
-      <VSlider v-model="filmFilters.length"
+      <v-slider v-model="filmFilters.length"
                class="mr-5"
                hide-details
-               thumb-label
                label="Длительность"
                :min="0"
                :max="200"
-               :step="1"/>
+               :step="1">
+        <template v-slot:append>
+          <VTextField v-model="filmFilters.length"
+                      hide-details
+                      single-line
+                      density="compact"
+                      type="number"
+                      style="width: 80px"/>
+        </template>
+      </v-slider>
 
-      <VSlider v-model="filmFilters.rating"
+      <v-slider v-model="filmFilters.rating"
                class="mr-5"
                hide-details
-               thumb-label
                label="Оценка"
                :min="1"
                :max="10"
-               :step="1"/>
+               :step="1">
+        <template v-slot:append>
+          <VTextField v-model="filmFilters.rating"
+                      hide-details
+                      single-line
+                      density="compact"
+                      type="number"
+                      style="width: 70px"/>
+        </template>
+      </v-slider>
 
       <v-btn color="accent" variant="flat" @click="acceptFilters()">Принять</v-btn>
     </v-toolbar>
