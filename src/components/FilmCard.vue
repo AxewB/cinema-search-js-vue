@@ -5,9 +5,10 @@
             :class="isHovering ? 'border-opacity-50' : 'border-opacity-10'"
             :elevation="isHovering ? 0 : 3"
             v-bind="props"
-            rounded="lg">
-      <v-img  :src="film.poster.previewUrl"
-              @click="moveToFilm(film)">
+            rounded="lg"
+            v-ripple
+            @click="moveToFilm(film)">
+      <v-img  :src="film.poster.previewUrl">
         <v-sheet  class="bg-transparent 
                         d-flex 
                         flex-column" 
@@ -19,8 +20,7 @@
                           justify-end
                           pr-2"  
                    width="100%" >
-            <v-btn v-if="isInFavourites" disabled rounded="0" icon 
-                    @click="addFilmToFavourites(film.id)">
+            <v-btn v-if="isInFavourites" disabled rounded="0" icon>
               <VIcon icon="mdi-heart" color="primary"/>
             </v-btn>
           </v-sheet>
@@ -47,7 +47,7 @@
           readonly
           :length="5"
           :size="24"
-          :model-value="film.rating.kp / 2"
+          :model-value="film.rating.kp"
           active-color="primary"
           half-increments
         />
