@@ -8,7 +8,7 @@
             rounded="lg"
             v-ripple
             @click="moveToFilm(film)">
-      <v-img  :src="film.poster.previewUrl">
+      <v-img  :src="film.poster.previewUrl" cover height="100%">
         <v-sheet  class="bg-transparent 
                         d-flex 
                         flex-column" 
@@ -41,7 +41,7 @@
                         border 
                         pl-3 pr-3 pt-1 pb-1 
                         rounded-lg">
-          {{ (film.rating.kp / 2).toFixed(1) }}
+          {{ (film.rating.kp).toFixed(1) }}
         </v-sheet>
         <VRating v-else
           readonly
