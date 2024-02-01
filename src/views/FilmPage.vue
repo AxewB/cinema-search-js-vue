@@ -5,22 +5,27 @@
                   pa-2" 
             width="100%">
     <v-sheet class="bg-transparent" 
-             height="870px" 
              width="1200px" 
              rounded>
-      <NavigationBar/>
 
       <VImg :src="film.poster.url" 
             cover 
             class="rounded-lg">
+            
         <v-sheet class="background-overlay" max-width="1200px">
-          <v-sheet class="bg-transparent pa-5 d-flex justify-space-between" 
-                  height="10%">
-            <v-btn prepend-icon="mdi-arrow-left" 
+          <NavigationBar>
+            <template #start>
+              <v-btn prepend-icon="mdi-arrow-left" 
                    variant="tonal"
                    @click="$router.go(-1)">
               Назад
             </v-btn>
+            </template>
+          </NavigationBar>
+
+          <v-sheet class="bg-transparent pa-5 d-flex justify-space-between" 
+                  height="10%">
+            
             <v-sheet class="bg-transparent flex-grow-1">
             </v-sheet>  
             
