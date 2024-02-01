@@ -31,123 +31,10 @@
       <VDivider class="ma-2"></VDivider>
       <!-- films list -->
       <v-sheet class="bg-transparent d-flex flex-row pa-5 pt-0" width="100%">
-        <v-sheet class="flex-grow-1 pa-2" rounded>
-
-          <!-- filters -->
-          <v-toolbar rounded
-                      class="d-flex
-                            flex-row
-                            justify-space-around
-                            align-center
-                            pa-2"
-                      density="compact">
-            <VTextField
-              class="mr-5 flex-grow-1"
-              hide-details
-              single-line
-              label="Название"
-              density="compact"
-              v-model="localFilteringSettings.name"
-              @update:model-value="resetPage"
-              variant="outlined"/>
-
-              <v-combobox v-model="localFilteringSettings.year"
-                        class="mr-5"
-                        hide-details
-                        label="Год"
-                        :items="filmStore.filmsYearRange"
-                        density="compact"
-                        variant="outlined"
-                        @update:model-value="resetPage"/>
-              <VSlider v-model="localFilteringSettings.length"
-                        class="mr-5"
-                        hide-details
-                        thumb-label
-                        label="Длительность"
-                        :min="0"
-                        :max="200"
-                        :step="1"
-                        @update:model-value="resetPage"/>
-              <VSlider v-model="localFilteringSettings.rating"
-                        class="mr-5"
-                        hide-details
-                        thumb-label
-                        label="Оценка"
-                        :min="1"
-                        :max="10"
-                        :step="1"
-                        @update:model-value="resetPage"/>
-              <v-btn color="accent" variant="flat" @click="acceptFilters()">Принять</v-btn>
-
-
-          <!-- list itself -->
-          </v-toolbar>
-
-          <v-toolbar class="mt-2
-                            pa-2
-                            d-flex
-                            flex-row
-                            align-center
-                            justify-start"
-                      rounded
-                      density="compact">
-            <div class="mr-5 flex-grow-1 d-flex flex-row justify-start">
-              <v-btn-toggle v-model="filmStore.sortBy" 
-                            mandatory 
-                            border 
-                            divided>
-                <v-btn class="text-body-1" value='name'>Имя</v-btn>
-                <v-btn class="text-body-1" value='year'>Год</v-btn>
-                <v-btn class="text-body-1" value='movieLength'>Длительность</v-btn>
-                <v-btn class="text-body-1" value='filmCritics'>Рейтинг</v-btn>
-              </v-btn-toggle>
-            </div>
-            <div>
-              <v-btn-toggle v-model="filmStore.sortDirection"
-                          mandatory
-                          class="mr-2">
-                <v-btn icon value="ascending">
-                  <VTooltip text="Ascending" activator="parent" location="top"/>
-                  <VIcon icon="mdi-sort-ascending"/>
-                </v-btn>
-                <v-btn icon value="descending">
-                  <VTooltip text="Descending" activator="parent" location="top"/>
-                  <VIcon icon="mdi-sort-descending"/>
-                </v-btn>
-              </v-btn-toggle>
-              <v-btn-toggle v-model="currentTileSize"
-                            mandatory 
-                            border>
-                <v-btn value="small" icon>
-                  <VTooltip text="Small" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-s"/>
-                </v-btn>
-                <v-btn value="standart" icon>
-                  <VTooltip text="Medium" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-m"/>
-                </v-btn>
-                <v-btn value="large" icon>
-                  <VTooltip text="Large" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-l"/>
-                </v-btn>
-              </v-btn-toggle>
-            </div>
-          </v-toolbar>
-          <v-sheet width="100%"
-                  class="d-flex
-                          flex-row
-                          flex-wrap
-                          justify-space-around
-                          mt-5">
-            <v-sheet v-for="film in filmsPageList" 
-                    :key="film.id + filmStore.sortBy + filmStore.sortDirection"
-                    class="bg-transparent">
-              <FilmCard :film="film"
-                        :cardWidth="tileSize[currentTileSize]"
-                        :tileSize="currentTileSize"/>
-            </v-sheet>
-          </v-sheet>
-        </v-sheet>
+        <FilmsList  :films="filmsPageList" 
+                    :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', 'votes.kp': 'Оценка'}"
+                    @filtered="setFilters"
+                    @sorted="setSorting"/>
       </v-sheet>
       <v-pagination :length="pageCount" v-model="currentFilmPage"></v-pagination>
     </v-sheet>
@@ -158,13 +45,12 @@
 import { mapStores, mapState } from 'pinia';
 import {useFilmStore} from '@/store/filmStore'
 import NavigationBar from '@/components/NavigationBar.vue';
-import FilmCard from '@/components/FilmCard.vue';
-
+import FilmsList from '@/components/FilmsList.vue'
 export default {
   name: 'HomePage',
   components: {
     NavigationBar,
-    FilmCard
+    FilmsList
   },
   data() {
     return {
@@ -172,12 +58,6 @@ export default {
       tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
       currentTileSize: 'standart',
       tilesOnOnePage: {'small': 36, 'standart': 25, 'large': 16},
-      localFilteringSettings: {
-        rating: 0,
-        name: '',
-        year: null,
-        length: 0
-      }
     }
   },
   computed: {
@@ -208,13 +88,20 @@ export default {
     resetPage() {
       this.currentFilmPage = 1
     },
-    acceptFilters() {
+    setFilters(filters) {
+      const {name, rating, year, length} = filters
       this.filmStore.filteringSettings = {
-        rating: this.localFilteringSettings.rating,
-        name: this.localFilteringSettings.name,
-        year: this.localFilteringSettings.year,
-        length: this.localFilteringSettings.length
+        ...this.filmStore.filteringSettings,
+        rating,
+        name,
+        year,
+        length
       }
+    },
+    setSorting(sortSettings) {
+      const {sortDirection, sortBy} = sortSettings;
+      this.filmStore.sortBy = sortBy;
+      this.filmStore.sortDirection = sortDirection;
     },
     changePageSettings() {
       const begin = this.filmsOnOnePage[0];
