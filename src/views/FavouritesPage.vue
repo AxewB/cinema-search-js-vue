@@ -1,6 +1,7 @@
 <template>
-  <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
-    <v-sheet class="bg-transparent" width="1200px">
+  <v-sheet class="bg-transparent d-flex flex-column justify-center pa-2" width="100%">
+    <NavigationBar/>
+    <!-- <v-sheet class="bg-transparent" width="1200px">
       <NavigationBar/>
       <v-toolbar class="mt-2
                             pa-2
@@ -37,8 +38,6 @@
             <div>
               
 
-              <!-- <VTooltip text="Only favourites" activator="parent" location="top"/>
-                <VIcon icon="mdi-heart"/> -->
               <v-btn-toggle v-model="userStore.filterSettings.sortDirection"
                             border
                             mandatory
@@ -83,6 +82,29 @@
           
           
     </v-sheet>
+     -->
+    <FilmsList  :films="filmsPageList" 
+                :sortByFieldsList="{name: 'Имя', year: 'Год', length: 'Длительность', rating: 'Оценка'}"
+                @filtered="setFilters"
+                @sorted="setSorting">
+      <template #extraFilters>
+        <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
+              <VSelect  :items="userStore.lists" 
+                        v-model="userStore.filterSettings.listName" 
+                        hide-details
+                        density="compact"
+                        variant="outlined"/>
+            </v-sheet>
+            <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
+                            border
+                            class="mr-2">
+              <v-btn icon :value="true">
+                <VTooltip text="Только избранное" activator="parent" location="top"/>
+                <VIcon icon="mdi-heart"/>
+              </v-btn>
+            </v-btn-toggle>
+      </template>
+    </FilmsList>
     
   </v-sheet>
 </template>
@@ -91,7 +113,8 @@
 import NavigationBar from '@/components/NavigationBar.vue';
 import { mapStores } from 'pinia';
 import { useUserStore} from '@/store/userStore';
-import FilmCard from '@/components/FilmCard.vue';
+// import FilmCard from '@/components/FilmCard.vue';
+import FilmsList from '@/components/FilmsList.vue';
 export default {
   name: "FavouritesPage",
   data() {
@@ -103,7 +126,8 @@ export default {
   },
   components: {
     NavigationBar,
-    FilmCard
+    // FilmCard,
+    FilmsList
   },
   computed: {
     ...mapStores(useUserStore),
@@ -112,6 +136,22 @@ export default {
     },
     sortBy() {
       return this.userStore.filterSettings.sortBy
+    },
+
+  },
+  methods: {
+    setFilters(filters) {
+      const {name, rating, length, year} = filters;
+      this.userStore.filterSettings.film.name = name;
+      this.userStore.filterSettings.film.rating = rating;
+      this.userStore.filterSettings.film.length = length;
+      this.userStore.filterSettings.film.year = year;
+    },
+    setSorting(sortSettings) {
+      const {sortDirection, sortByField} = sortSettings;
+      console.log(sortSettings);
+      this.userStore.filterSettings.sortBy = sortByField;
+      this.userStore.filterSettings.sortDirection = sortDirection
     }
   }
 }

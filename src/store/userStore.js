@@ -787,7 +787,14 @@ export const useUserStore = defineStore("user", {
       listName: 'Все',
       sortBy: 'name',
       sortDirection: 'ascending',
-      onlyFavourites: false
+      onlyFavourites: false,
+
+      film: {
+        name: '',
+        rating: 0,
+        length: 0,
+        year: null,
+      }
     }
   }),
   getters: {
@@ -853,10 +860,19 @@ export const useUserStore = defineStore("user", {
      */
     filteredFilms(state) {
       const {sortBy, sortDirection} = state.filterSettings;
-      const result = this.filmsArray.sort((a,b) => 
+      let result = this.filmsArray.sort((a,b) => 
         (a[sortBy] > b[sortBy]) ? 1 : 
         ((b[sortBy] > a[sortBy]) ? -1 : 0)
       );
+
+      result = result.filter((film) =>
+      film.name.toLowerCase().includes(state.filterSettings.film.name.toLowerCase()) &&
+      (state.filterSettings.film.rating ? film.rating.kp >= state.filterSettings.film.rating : true) &&
+      (state.filterSettings.film.length ? film.movieLength <= state.filterSettings.film.length : true)  &&
+      (state.filterSettings.film.year ? film.year === state.filterSettings.film.year : true)
+        
+      )
+
       if (sortDirection === 'descending'){
         result.reverse();
       }
