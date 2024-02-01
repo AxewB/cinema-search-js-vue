@@ -1,111 +1,30 @@
 <template>
-  <v-sheet class="bg-transparent d-flex flex-column justify-center pa-2" width="100%">
-    <NavigationBar/>
-    <!-- <v-sheet class="bg-transparent" width="1200px">
+  <v-sheet class="bg-transparent d-flex flex-column align-center pa-2" width="100%">
+    <v-sheet class="d-flex flex-column bg-transparent" width='1200px'>
       <NavigationBar/>
-      <v-toolbar class="mt-2
-                            pa-2
-                            d-flex
-                            flex-row
-                            align-center
-                            justify-start"
-                      rounded
-                      density="compact">
-            <v-sheet class="mr-5 d-flex flex-row justify-start bg-transparent">
-              <v-btn-toggle v-model="userStore.filterSettings.sortBy" 
-                            mandator border divided>
-                <v-btn class="text-body-1" value='name'>Имя</v-btn>
-                <v-btn class="text-body-1" value='year'>Год</v-btn>
-                <v-btn class="text-body-1" value='movieLength'>Длительность</v-btn>
-                <v-btn class="text-body-1" value='filmCritics'>Рейтинг</v-btn>
-              </v-btn-toggle>
-            </v-sheet>
-            <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
-              <VSelect  :items="userStore.lists" 
-                        v-model="userStore.filterSettings.listName" 
-                        hide-details
-                        density="compact"
-                        variant="outlined"/>
-            </v-sheet>
-            <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
-                            border
-                            class="mr-2">
-              <v-btn icon :value="true">
-                <VTooltip text="Только избранное" activator="parent" location="top"/>
-                <VIcon icon="mdi-heart"/>
-              </v-btn>
-            </v-btn-toggle>
-            <div>
-              
-
-              <v-btn-toggle v-model="userStore.filterSettings.sortDirection"
-                            border
-                            mandatory
-                            class="mr-2">
-                <v-btn icon value="ascending">
-                  <VTooltip text="Ascending" activator="parent" location="top"/>
-                  <VIcon icon="mdi-sort-ascending"/>
-                </v-btn>
-                <v-btn icon value="descending">
-                  <VTooltip text="Descending" activator="parent" location="top"/>
-                  <VIcon icon="mdi-sort-descending"/>
+      <FilmsList  :films="filmsPageList" 
+                  :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
+                  @filtered="setFilters"
+                  @sorted="setSorting">
+        <template #extraFilters>
+          <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
+                <VSelect  :items="userStore.lists" 
+                          v-model="userStore.filterSettings.listName" 
+                          hide-details
+                          density="compact"
+                          variant="outlined"/>
+              </v-sheet>
+              <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
+                              border
+                              class="mr-2">
+                <v-btn icon :value="true">
+                  <VTooltip text="Только избранное" activator="parent" location="top"/>
+                  <VIcon icon="mdi-heart"/>
                 </v-btn>
               </v-btn-toggle>
-              <v-btn-toggle v-model="currentTileSize"
-                            mandatory 
-                            border>
-                <v-btn value="small" icon>
-                  <VTooltip text="Small" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-s"/>
-                </v-btn>
-                <v-btn value="standart" icon>
-                  <VTooltip text="Medium" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-m"/>
-                </v-btn>
-                <v-btn value="large" icon>
-                  <VTooltip text="Large" activator="parent" location="top"/>
-                  <VIcon icon="mdi-size-l"/>
-                </v-btn>
-              </v-btn-toggle>
-            </div>
-      </v-toolbar>
-      
-      <v-sheet class="d-flex flox-row flex-wrap justify-lg-space-around mt-2 pt-2">
-        <v-sheet v-for="film in filmsPageList" 
-                :key="film.id + userStore.filterSettings.sortBy + userStore.filterSettings.sortDirection + 'favourite' + Date.now()"
-                class="bg-transparent">
-          <FilmCard :film="film"
-                    :cardWidth="tileSize[currentTileSize]"
-                    :tileSize="currentTileSize"/>
-        </v-sheet>
-      </v-sheet>
-          
-          
+        </template>
+      </FilmsList>
     </v-sheet>
-     -->
-    <FilmsList  :films="filmsPageList" 
-                :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', 'votes.kp': 'Оценка'}"
-                @filtered="setFilters"
-                @sorted="setSorting">
-      <template #extraFilters>
-        <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
-              <VSelect  :items="userStore.lists" 
-                        v-model="userStore.filterSettings.listName" 
-                        hide-details
-                        density="compact"
-                        variant="outlined"/>
-            </v-sheet>
-            <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
-                            border
-                            class="mr-2">
-              <v-btn icon :value="true">
-                <VTooltip text="Только избранное" activator="parent" location="top"/>
-                <VIcon icon="mdi-heart"/>
-              </v-btn>
-            </v-btn-toggle>
-      </template>
-    </FilmsList>
-    
   </v-sheet>
 </template>
 
@@ -113,7 +32,6 @@
 import NavigationBar from '@/components/NavigationBar.vue';
 import { mapStores } from 'pinia';
 import { useUserStore} from '@/store/userStore';
-// import FilmCard from '@/components/FilmCard.vue';
 import FilmsList from '@/components/FilmsList.vue';
 export default {
   name: "FavouritesPage",
@@ -126,7 +44,6 @@ export default {
   },
   components: {
     NavigationBar,
-    // FilmCard,
     FilmsList
   },
   computed: {
@@ -137,9 +54,12 @@ export default {
     sortBy() {
       return this.userStore.filterSettings.sortBy
     },
-
   },
   methods: {
+    /**
+     * Устанавливает настройки фильтрации в хранилище
+     * @param {Object} filters - Объект с настройками фильтрации
+     */
     setFilters(filters) {
       const {name, rating, length, year} = filters;
       this.userStore.filterSettings.film = {
@@ -150,6 +70,10 @@ export default {
         length
       }
     },
+    /**
+     * Устанавливает настройки сортировки в хранилище
+     * @param {Object} sortSettings - Объект с настройками сортировки
+     */
     setSorting(sortSettings) {
       const {sortDirection, sortBy} = sortSettings;
       console.log(sortSettings);

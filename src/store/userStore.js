@@ -3,23 +3,22 @@ import { defineStore } from "pinia";
 //
 export const useUserStore = defineStore("user", {
   state: () => ({
-    favourites: [],
-    // There will be stored all id's and everything that user decides to do with it (his rating on film, commentary etc.)
-
-    //example:
-    //films: {
-    //  id1: {
-    //    favourites: true,
-    //    rating: 5,
-    //    commentary: "cool film",
-    //    film: object of film itself,
-    //    status: 'watching' // can be 'watching', 'plans', 'completed', 'abandoned'
-    //  }
-    //}
+    /**
+     * Список фильмов для закладок. У каждого фильма есть определенные параметры: добавлен в избранное, рейтинг и др.
+     * Изначально были заполнены некоторые поля, чтобы было с чем экспериментировать
+     * @example
+     *  films: {
+     *    id1: {
+     *    favourites: true,
+     *    rating: 5,
+     *    film: object of film itself,
+     *    status: 'watching' // can be 'watching', 'plans', 'completed', 'abandoned'
+     *  }
+     *}
+    */
     films: {
       328: {
         favourite: false,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4b1c140be7efc668a518bb8718ba159f",
@@ -81,7 +80,6 @@ export const useUserStore = defineStore("user", {
       },
       370: {
         favourite: true,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4726854ee2be6d928a2d852281fa18f9",
@@ -180,7 +178,6 @@ export const useUserStore = defineStore("user", {
       },
       430: {
         favourite: false,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4ad80bb0eadac154a255cbd395e093e9",
@@ -312,7 +309,6 @@ export const useUserStore = defineStore("user", {
       },
       41520: {
         favourite: false,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4e2111b36611a21e87e293af0b7e7ee1",
@@ -414,7 +410,6 @@ export const useUserStore = defineStore("user", {
       },
       88173: {
         favourite: false,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4a146071bec0e165a754f4963224587b",
@@ -492,7 +487,6 @@ export const useUserStore = defineStore("user", {
       },
       251733: {
         favourite: true,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4ae8f7b627a55093b7a4f634dd2f9cc5",
@@ -570,7 +564,6 @@ export const useUserStore = defineStore("user", {
       },
       420923: {
         favourite: true,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4db90bea36e15d319bd62aafb769f487",
@@ -626,7 +619,6 @@ export const useUserStore = defineStore("user", {
       },
       535341: {
         favourite: true,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "4127663ed234fa8584aeb969ceb02cd8",
@@ -704,7 +696,6 @@ export const useUserStore = defineStore("user", {
       },
       835086: {
         favourite: true,
-        commentary: "",
         film: {
           externalId: {
             kpHD: "422c2eeee174f1cda1d00737488edc1a",
@@ -781,8 +772,11 @@ export const useUserStore = defineStore("user", {
         status: "В планах",
       },
     },
+
+    // Названия списков, в которые можно добавить фильм
     lists: ['Все', "Смотрю", "В планах", "Просмотрено", "Заброшено"],
 
+    // Настройки фильтрации и сортировки
     filterSettings: {
       listName: 'Все',
       sortBy: 'name',
@@ -798,6 +792,12 @@ export const useUserStore = defineStore("user", {
     }
   }),
   getters: {
+    /**
+     * Проверяет наличие фильма в закладках
+     * 
+     * @param {Object} state - состояние хранилища
+     * @returns {Boolean} - возвращает true/false
+     */
     isExists: (state) => {
       return (id) => {
         return !!state.films[id];
@@ -856,21 +856,29 @@ export const useUserStore = defineStore("user", {
      * Фильтрует фильмы в соответствии с настройками фильтрации в состоянии.
      * 
      * @param {Object} state - Состояние 
-     * @returns {Array} - Отфильтрованный массив фильмов.
+     * @returns {Array} - Отфильтрованный и отсортированный массив фильмов.
      */
     filteredFilms(state) {
       const {sortBy, sortDirection} = state.filterSettings;
-      let result = this.filmsArray.sort((a,b) => 
-        (a[sortBy] > b[sortBy]) ? 1 : 
-        ((b[sortBy] > a[sortBy]) ? -1 : 0)
-      );
+      let result;
+      if (state.sortBy === 'rating') {
+        result = this.filmsArray.sort((a,b) => 
+          (a.rating.kp > b.rating.kp) ? 1 : 
+          ((b.rating.kp > a.rating.kp) ? -1 : 0)
+        );
+      }
+      else {
+        result = this.filmsArray.sort((a,b) => 
+          (a[sortBy] > b[sortBy]) ? 1 : 
+          ((b[sortBy] > a[sortBy]) ? -1 : 0)
+        );
+      }
 
       result = result.filter((film) =>
-      film.name.toLowerCase().includes(state.filterSettings.film.name.toLowerCase()) &&
-      (state.filterSettings.film.rating ? film.rating.kp >= state.filterSettings.film.rating : true) &&
-      (state.filterSettings.film.length ? film.movieLength <= state.filterSettings.film.length : true)  &&
-      (state.filterSettings.film.year ? film.year === state.filterSettings.film.year : true)
-        
+        film.name.toLowerCase().includes(state.filterSettings.film.name.toLowerCase()) &&
+        (state.filterSettings.film.rating ? film.rating.kp >= state.filterSettings.film.rating : true) &&
+        (state.filterSettings.film.length ? film.movieLength <= state.filterSettings.film.length : true)  &&
+        (state.filterSettings.film.year ? film.year === state.filterSettings.film.year : true)
       )
 
       if (sortDirection === 'descending'){
@@ -886,12 +894,10 @@ export const useUserStore = defineStore("user", {
      * @param {string} id - Идентификатор фильма.
      * @param {string} film - Объект с информацией о фильме.
      * @param {boolean} favourite - Флаг, является ли фильм избранным (по умолчанию false).
-     * @param {string} commentary - Комментарий к фильму (по умолчанию "").
      */
-    addFilmToProfile(id, film, favourite = false, commentary = "") {
+    addFilmToProfile(id, film, favourite = false) {
       this.films[id] = {
         favourite,
-        commentary,
         film,
         status: "В планах",
       };

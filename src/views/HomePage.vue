@@ -1,42 +1,63 @@
 <template>
-  <v-sheet class="bg-transparent d-flex justify-center pa-2" width="100%">
+  <v-sheet  class="bg-transparent 
+                  d-flex 
+                  justify-center 
+                  pa-2" 
+            width="100%">
     <v-sheet class="bg-transparent" width="1200px">
       <NavigationBar/>
-      <!-- featured film -->
-      <v-img class="d-flex rounded-lg "
+      <v-img  class="d-flex rounded-lg "
               v-bind=props
               :src="featuredFilmPoster"
               cover
               height="500px">
-        <div class="bg-blur featured-film-overlay pa-5 rounded-lg d-flex flex-row">
+        <div  class="bg-blur 
+                    featured-film-overlay 
+                    pa-5 
+                    rounded-lg 
+                    d-flex 
+                    flex-row">
 
             <v-sheet  class="bg-transparent">
-              <div class="text-h4 text-disabled">Рекомендуем</div>
-              <VDivider class="mb-3"/>
-              <div class="text-h2 mb-5">{{ featuredFilmName }}</div>
-              <div class="text-body-1 text-disabled"
-                  height="100%">
-              {{ featuredFilmDescription }}
-
+              <div class="text-h4 text-disabled">
+                Рекомендуем
               </div>
-              <v-btn class="mt-5" variant="outlined" size="large" :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">СМОТРЕТЬ</v-btn>
+              <VDivider class="mb-3"/>
+              <div class="text-h2 mb-5">
+                {{ featuredFilmName }}
+              </div>
+              <div  class="text-body-1 text-disabled"
+                    height="100%">
+                {{ featuredFilmDescription }}
+              </div>
+              <v-btn  class="mt-5" 
+                      variant="outlined" 
+                      size="large" 
+                      :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">
+                СМОТРЕТЬ
+              </v-btn>
             </v-sheet>
-        <v-img class="rounded-lg ma-2"
-              :src="featuredFilmPoster"
-              cover
-              width="300px">
+          <v-img  class="rounded-lg ma-2"
+                  :src="featuredFilmPoster"
+                  cover
+                  width="300px">
           </v-img>
         </div>
       </v-img>
       <VDivider class="ma-2"></VDivider>
       <!-- films list -->
-      <v-sheet class="bg-transparent d-flex flex-row pa-5 pt-0" width="100%">
+      <v-sheet  class="bg-transparent 
+                      d-flex 
+                      flex-row 
+                      pa-5 
+                      pt-0" 
+                width="100%">
         <FilmsList  :films="filmsPageList" 
-                    :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', 'votes.kp': 'Оценка'}"
+                    :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
                     @filtered="setFilters"
                     @sorted="setSorting"/>
       </v-sheet>
-      <v-pagination :length="pageCount" v-model="currentFilmPage"></v-pagination>
+      <VPagination :length="pageCount" v-model="currentFilmPage"/>
     </v-sheet>
   </v-sheet>
 </template>
@@ -75,20 +96,30 @@ export default {
     filmsPageList() {
       return this.filmStore.sortedNFilteredByFieldRange
     },
+    
+    // Пересчитывает, сколько должно быть фильмов на одной странице
     filmsOnOnePage() {
       const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
       const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
       return [begin, end]
     },
+
+    // Определяет количество возможных страниц
     pageCount() {
       return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
     },
   },
   methods: {
+    // Сброс страницы при изменении фильтрации/сортировки
     resetPage() {
       this.currentFilmPage = 1
     },
+    /**
+     * Устанавливает значения для фильтрации фильмов
+     * @param {Object} filters - Объект с настройками фильтрации
+     */
     setFilters(filters) {
+      this.resetPage()
       const {name, rating, year, length} = filters
       this.filmStore.filteringSettings = {
         ...this.filmStore.filteringSettings,
@@ -98,11 +129,17 @@ export default {
         length
       }
     },
+    /**
+     * Устанавливает значения для сортировки фильмов
+     * @param {Object} sortSettings - Объект с настройками сортировки
+     */
     setSorting(sortSettings) {
+      this.resetPage()
       const {sortDirection, sortBy} = sortSettings;
       this.filmStore.sortBy = sortBy;
       this.filmStore.sortDirection = sortDirection;
     },
+    // Устанавливает границы для отсечения фильмов в хранилище
     changePageSettings() {
       const begin = this.filmsOnOnePage[0];
       const end = this.filmsOnOnePage[1];
@@ -111,10 +148,13 @@ export default {
   },
 
   watch: {
+    // При изменении размера плиток, их число на одной странице пересчитывается, 
+    // а страница сбрасывается на первую
     currentTileSize() {
       this.resetPage()
       this.changePageSettings()
     },
+    // При перелистывании запрашивает следующую или предыдущую стрнаицу фильмов
     currentFilmPage() { 
       this.changePageSettings()
     }    

@@ -8,7 +8,7 @@
             rounded="lg"
             v-ripple
             @click="moveToFilm(film)">
-      <v-img  :src="film.poster.previewUrl" cover height="100%">
+      <v-img :src="film.poster.previewUrl" cover height="100%">
         <v-sheet  class="bg-transparent 
                         d-flex 
                         flex-column" 
@@ -20,13 +20,18 @@
                           justify-end
                           pr-2"  
                    width="100%" >
-            <v-btn v-if="isInFavourites" disabled rounded="0" icon>
+            <v-btn v-if="isInFavourites" 
+                   disabled 
+                   rounded="0" 
+                   icon>
               <VIcon icon="mdi-heart" color="primary"/>
             </v-btn>
           </v-sheet>
         </v-sheet>
       </v-img>
-      <v-card-title v-if="showDetails" >{{film.name}}</v-card-title>
+      <v-card-title v-if="showDetails">
+        {{film.name}}
+      </v-card-title>
       <v-card-text v-if="showDetails" class="text-caption 
                           text-disabled 
                           d-flex 
@@ -44,13 +49,12 @@
           {{ (film.rating.kp).toFixed(1) }}
         </v-sheet>
         <VRating v-else
-          readonly
-          :length="5"
-          :size="24"
-          :model-value="film.rating.kp"
-          active-color="primary"
-          half-increments
-        />
+                 readonly
+                 :length="5"
+                 :size="24"
+                 :model-value="film.rating.kp"
+                 active-color="primary"
+                 half-increments/>
       </v-card-text>
     </v-card>
   </v-hover>
@@ -83,7 +87,7 @@ export default {
     moveToFilm(film) {
       this.$router.push({
         name: 'film',
-        params: {id: film.id }
+        params: { id: film.id }
       })
     },
     addFilmToFavourites(id) {

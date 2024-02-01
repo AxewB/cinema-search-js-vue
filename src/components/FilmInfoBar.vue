@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "filmInfoBar",
+  name: "FilmInfoBar",
   props: {
     'title': { type: String },
     'data': { type: String }
