@@ -9,13 +9,12 @@
             <VDivider v-if="this.$route.name === 'home'" 
                       vertical 
                       class="ml-2 mr-2"/>
-            <v-btn  v-if="this.$route.name === 'home'" 
-                    @click="moveToRandomFilmPage()" 
+            <v-btn  @click="moveToRandomFilmPage()" 
                      variant="plain" >Случайный фильм</v-btn>
                      
           </v-sheet>
           <v-sheet class="bg-transparent d-flex justify-end" width="33%">
-            <v-btn rounded variant="plain" icon="mdi-account" :to="{name: 'favourites'}"/>
+            <v-btn rounded variant="tonal" icon="mdi-bookmark" :to="{name: 'favourites'}"/>
           </v-sheet>
         </v-toolbar>
       </v-sheet>
