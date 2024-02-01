@@ -84,7 +84,7 @@
     </v-sheet>
      -->
     <FilmsList  :films="filmsPageList" 
-                :sortByFieldsList="{name: 'Имя', year: 'Год', length: 'Длительность', rating: 'Оценка'}"
+                :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', 'votes.kp': 'Оценка'}"
                 @filtered="setFilters"
                 @sorted="setSorting">
       <template #extraFilters>
@@ -142,16 +142,22 @@ export default {
   methods: {
     setFilters(filters) {
       const {name, rating, length, year} = filters;
-      this.userStore.filterSettings.film.name = name;
-      this.userStore.filterSettings.film.rating = rating;
-      this.userStore.filterSettings.film.length = length;
-      this.userStore.filterSettings.film.year = year;
+      this.userStore.filterSettings.film = {
+        ...this.userStore.filterSettings.film, 
+        name, 
+        year, 
+        rating,
+        length
+      }
     },
     setSorting(sortSettings) {
-      const {sortDirection, sortByField} = sortSettings;
+      const {sortDirection, sortBy} = sortSettings;
       console.log(sortSettings);
-      this.userStore.filterSettings.sortBy = sortByField;
-      this.userStore.filterSettings.sortDirection = sortDirection
+      this.userStore.filterSettings = {
+        ...this.userStore.filterSettings, 
+        sortDirection, 
+        sortBy
+      }
     }
   }
 }
