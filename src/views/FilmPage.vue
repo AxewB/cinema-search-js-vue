@@ -185,7 +185,7 @@ import { useFilmStore } from '@/store/filmStore';
 import { useUserStore } from '@/store/userStore';
 import FilmInfoBar from '@/components/FilmInfoBar.vue'
 import NavigationBar from '@/components/NavigationBar.vue';
-import { getRandomInt } from '@/scripts/myUtilities'
+import getRandomInt from '@/scripts/getRandomInt.js'
 import FilmCard from '@/components/FilmCard.vue';
 export default {
   name: "FilmPage", 

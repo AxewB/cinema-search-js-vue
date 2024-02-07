@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getRandomInt } from '@/scripts/myUtilities';
+import getRandomInt from '@/scripts/getRandomInt.js';
 
 export const useFilmStore = defineStore('film', {
   state: () => ({

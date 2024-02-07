@@ -48,7 +48,7 @@
 <script>
 import { mapState } from 'pinia';
 import { useFilmStore } from '@/store/filmStore';
-import { getRandomInt } from '@/scripts/myUtilities'
+import getRandomInt from '@/scripts/getRandomInt.js'
 export default {
   name: "NavigationBar",
   methods: {
