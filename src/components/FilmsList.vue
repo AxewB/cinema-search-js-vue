@@ -9,11 +9,11 @@
                 density="compact">
       <VTextField class="mr-5 flex-grow-1"
                   hide-details
-                  single-line
                   label="Название"
                   density="compact"
                   v-model="filmFilters.name"
-                  variant="outlined"/>
+                  variant="outlined"
+                  @keydown.enter.prevent="acceptFilters()"/>
 
       <v-combobox v-model="filmFilters.year"
                   class="mr-5"
@@ -21,45 +21,40 @@
                   label="Год"
                   :items="filmsYearRange"
                   density="compact"
-                  variant="outlined"/>
+                  variant="outlined"
+                  @keydown.enter.prevent="acceptFilters()"/>
+      <VTextField v-model="filmFilters.length"
+                  class="mr-5"
+                  label="Длительность, мин."
+                  hide-details
+                  :min="0"
+                  :max="maxLength"
+                  type="number"
+                  density="compact"
+                  variant="outlined"
+                  @keydown.enter.prevent="acceptFilters()"/>
 
-      <v-slider v-model="filmFilters.length"
-                class="mr-5"
-                hide-details
-                label="Длительность"
-                :min="0"
-                :max="200"
-                :step="1">
-        <template v-slot:append>
-          <VTextField v-model="filmFilters.length"
-                      hide-details
-                      single-line
-                      density="compact"
-                      type="number"
-                      style="width: 80px"/>
-        </template>
-      </v-slider>
-
-      <v-slider v-model="filmFilters.rating"
-                class="mr-5"
-                hide-details
-                label="Оценка"
-                :min="1"
-                :max="10"
-                :step="1">
-        <template v-slot:append>
-          <VTextField v-model="filmFilters.rating"
-                      hide-details
-                      single-line
-                      density="compact"
-                      type="number"
-                      style="width: 70px"/>
-        </template>
-      </v-slider>
-
+      
+      <v-sheet  class="mr-5 bg-transparent pa-1 rounded d-flex flex-column">
+        <div class="text-grey-lighten-1 text-caption">
+          Рейтинг {{ filmFilters.rating > 0 ? `(${filmFilters.rating * 2})` : `` }}
+        </div>
+        <VRating  v-model="filmFilters.rating"
+                  hide-details
+                  type="number"
+                  label="Рейтинг"
+                  size="32"
+                  half-increments
+                  hover
+                  clearable
+                  active-color="primary"
+                  @update:modelValue="acceptFilters()"
+                  @keydown.enter.prevent="acceptFilters()"/>
+      </v-sheet>
+      
       <v-btn  color="accent" 
               variant="flat" 
-              @click="acceptFilters()">
+              @click="acceptFilters()"> 
         Принять
       </v-btn>
     </v-toolbar>
@@ -126,14 +121,14 @@
                       location="top"/>
             <VIcon icon="mdi-size-s"/>
           </v-btn>
-
+          
           <v-btn icon value="standart">
             <VTooltip text="Средние карточки" 
                       activator="parent" 
                       location="top"/>
             <VIcon icon="mdi-size-m"/>
           </v-btn>
-          
+
           <v-btn icon value="large">
             <VTooltip text="Большие карточки" 
                       activator="parent" 
@@ -150,7 +145,7 @@
                     justify-space-around
                     mt-5">
       <v-sheet  v-for="film in films" 
-                :key="film.id + film.name + $parent.name + sortBy + sortDirection + Date.now()"
+                :key="film.id + film.name + $parent.name + sortBy + sortDirection + additionalKey + Date.now()"
                 class="bg-transparent">
         <FilmCard :film="film"
                   :cardWidth="tileSize[currentTileSize]"
@@ -198,7 +193,9 @@ export default {
         year: null,
         length: 0, 
         rating: 0,
-      }
+      },
+      maxLength: 200,
+      additionalKey: '',
     }
   }, 
   methods: {
@@ -206,7 +203,16 @@ export default {
      * Отправляет выбранные фильтры в родительский компонент
      */
     acceptFilters() {
-      this.$emit('filtered', this.filmFilters)
+      this.additionalKey = JSON.stringify(this.filmFilters)
+      this.$emit('filtered', {
+        name: this.filmFilters.name, 
+
+        // Т.к. при ручном вводе получается строка, необходимо привести ее к числовому типу. 
+        // Если это не сделать, фильтрация не работает, т.к. идет строгое сравнение (в данном случае типа Number)
+        year: +this.filmFilters.year,
+        length: +this.filmFilters.length > this.maxLength ? this.maxLength : +this.filmFilters.length < 0 ? 0 : +this.filmFilters.length,
+        rating: +this.filmFilters.rating * 2,
+      })
     },
     /**
      * Отправляет выбранный вариант сортировки в родительский компонент
