@@ -17,49 +17,49 @@ export const useUserStore = defineStore("user", {
      *}
     */
     films: {
-      328: {
+      535341: {
         favourite: false,
-        film:filmsData.docs,
+        film:filmsData.docs[0],
         status: "Смотрю",
       },
-      370: {
+      1143242: {
         favourite: true,
-        film: filmsData.docs[370],
+        film: filmsData.docs[1],
         status: "Смотрю",
       },
-      430: {
+      462682: {
         favourite: false,
-        film: filmsData.docs[430],
+        film: filmsData.docs[2],
         status: "Смотрю",
       },
-      41520: {
+      1318972: {
         favourite: false,
-        film: filmsData.docs[41520],
+        film: filmsData.docs[3],
         status: "Просмотрено",
       },
-      88173: {
+      41519: {
         favourite: false,
-        film: filmsData.docs[88173],
+        film: filmsData.docs[4],
+        status: "Заброшено",
+      },
+      8124: {
+        favourite: true,
+        film: filmsData.docs[5],
         status: "Заброшено",
       },
       251733: {
         favourite: true,
-        film: filmsData.docs[251733],
+        film: filmsData.docs[6],
         status: "Заброшено",
       },
-      420923: {
+      447301: {
         favourite: true,
-        film: filmsData.docs[420923],
-        status: "Заброшено",
-      },
-      535341: {
-        favourite: true,
-        film: filmsData.docs[535341],
+        film: filmsData.docs[7],
         status: "В планах",
       },
-      835086: {
+      326: {
         favourite: true,
-        film: filmsData.docs[835086],
+        film: filmsData.docs[8],
         status: "В планах",
       },
     },
