@@ -1,13 +1,27 @@
 <template>
-  <v-sheet class="bg-transparent d-flex flex-column align-center pa-2" width="100%">
-    <v-sheet class="d-flex flex-column bg-transparent" width='1200px'>
+  <v-sheet  class="bg-transparent 
+                  d-flex 
+                  flex-column 
+                  align-center 
+                  pa-2" 
+            width="100%">
+    <v-sheet  class="d-flex 
+                    flex-column 
+                    bg-transparent" 
+              width='1200px'>
       <NavigationBar/>
       <FilmsList  :films="filmsPageList" 
                   :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
                   @filtered="setFilters"
                   @sorted="setSorting">
         <template #extraFilters>
-          <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
+          <v-sheet  class="mr-5 
+                          flex-grow-1 
+                          d-flex 
+                          flex-row 
+                          justify-center 
+                          bg-transparent 
+                          align-center">
             <VSelect  :items="userStore.lists" 
                       v-model="userStore.filterSettings.listName" 
                       hide-details
