@@ -39,7 +39,7 @@
                           align-center 
                           justify-space-between">
         {{film.year}} 
-        <v-sheet v-if="tileSize === 'small'"
+        <v-sheet  v-if="tileSize === 'small'"
                   class="text-mono 
                         text-body 
                         font-weight-black 

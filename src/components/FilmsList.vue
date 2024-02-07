@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="flex-grow-1 pa-2" rounded>
-    <v-toolbar rounded
+    <v-toolbar  rounded
                 class="d-flex
                       flex-row
                       justify-space-around
@@ -24,12 +24,12 @@
                   variant="outlined"/>
 
       <v-slider v-model="filmFilters.length"
-               class="mr-5"
-               hide-details
-               label="Длительность"
-               :min="0"
-               :max="200"
-               :step="1">
+                class="mr-5"
+                hide-details
+                label="Длительность"
+                :min="0"
+                :max="200"
+                :step="1">
         <template v-slot:append>
           <VTextField v-model="filmFilters.length"
                       hide-details
@@ -41,12 +41,12 @@
       </v-slider>
 
       <v-slider v-model="filmFilters.rating"
-               class="mr-5"
-               hide-details
-               label="Оценка"
-               :min="1"
-               :max="10"
-               :step="1">
+                class="mr-5"
+                hide-details
+                label="Оценка"
+                :min="1"
+                :max="10"
+                :step="1">
         <template v-slot:append>
           <VTextField v-model="filmFilters.rating"
                       hide-details
@@ -149,9 +149,9 @@
                     flex-wrap
                     justify-space-around
                     mt-5">
-      <v-sheet v-for="film in films" 
-              :key="film.id + film.name + $parent.name + sortBy + sortDirection + Date.now()"
-              class="bg-transparent">
+      <v-sheet  v-for="film in films" 
+                :key="film.id + film.name + $parent.name + sortBy + sortDirection + Date.now()"
+                class="bg-transparent">
         <FilmCard :film="film"
                   :cardWidth="tileSize[currentTileSize]"
                   :tileSize="currentTileSize"/>

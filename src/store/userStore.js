@@ -863,14 +863,12 @@ export const useUserStore = defineStore("user", {
       let result;
       if (state.sortBy === 'rating') {
         result = this.filmsArray.sort((a,b) => 
-          (a.rating.kp > b.rating.kp) ? 1 : 
-          ((b.rating.kp > a.rating.kp) ? -1 : 0)
+          (a.rating.kp > b.rating.kp) ? 1 : ((b.rating.kp > a.rating.kp) ? -1 : 0)
         );
       }
       else {
         result = this.filmsArray.sort((a,b) => 
-          (a[sortBy] > b[sortBy]) ? 1 : 
-          ((b[sortBy] > a[sortBy]) ? -1 : 0)
+          (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0)
         );
       }
 

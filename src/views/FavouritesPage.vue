@@ -8,20 +8,20 @@
                   @sorted="setSorting">
         <template #extraFilters>
           <v-sheet class="mr-5 flex-grow-1 d-flex flex-row justify-center bg-transparent align-center">
-                <VSelect  :items="userStore.lists" 
-                          v-model="userStore.filterSettings.listName" 
-                          hide-details
-                          density="compact"
-                          variant="outlined"/>
-              </v-sheet>
-              <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
-                              border
-                              class="mr-2">
-                <v-btn icon :value="true">
-                  <VTooltip text="Только избранное" activator="parent" location="top"/>
-                  <VIcon icon="mdi-heart"/>
-                </v-btn>
-              </v-btn-toggle>
+            <VSelect  :items="userStore.lists" 
+                      v-model="userStore.filterSettings.listName" 
+                      hide-details
+                      density="compact"
+                      variant="outlined"/>
+          </v-sheet>
+          <v-btn-toggle v-model="userStore.filterSettings.onlyFavourites"
+                        border
+                        class="mr-2">
+            <v-btn icon :value="true">
+              <VTooltip text="Только избранное" activator="parent" location="top"/>
+              <VIcon icon="mdi-heart"/>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </FilmsList>
     </v-sheet>

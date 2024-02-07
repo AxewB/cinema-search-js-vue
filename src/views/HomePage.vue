@@ -18,25 +18,25 @@
                     d-flex 
                     flex-row">
 
-            <v-sheet  class="bg-transparent">
-              <div class="text-h4 text-disabled">
-                Рекомендуем
-              </div>
-              <VDivider class="mb-3"/>
-              <div class="text-h2 mb-5">
-                {{ featuredFilmName }}
-              </div>
-              <div  class="text-body-1 text-disabled"
-                    height="100%">
-                {{ featuredFilmDescription }}
-              </div>
-              <v-btn  class="mt-5" 
-                      variant="outlined" 
-                      size="large" 
-                      :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">
-                СМОТРЕТЬ
-              </v-btn>
-            </v-sheet>
+          <v-sheet  class="bg-transparent">
+            <div class="text-h4 text-disabled">
+              Рекомендуем
+            </div>
+            <VDivider class="mb-3"/>
+            <div class="text-h2 mb-5">
+              {{ featuredFilmName }}
+            </div>
+            <div  class="text-body-1 text-disabled"
+                  height="100%">
+              {{ featuredFilmDescription }}
+            </div>
+            <v-btn  class="mt-5" 
+                    variant="outlined" 
+                    size="large" 
+                    :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">
+              СМОТРЕТЬ
+            </v-btn>
+          </v-sheet>
           <v-img  class="rounded-lg ma-2"
                   :src="featuredFilmPoster"
                   cover

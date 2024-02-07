@@ -54,11 +54,11 @@ export const useFilmStore = defineStore('film', {
      */
     filteredFilms(state) {
       return state.films.filter((film) =>
-          film.name.includes(state.filteringSettings.name) &&
+        film.name.includes(state.filteringSettings.name) &&
           (state.filteringSettings.rating ? film.rating.kp >= state.filteringSettings.rating : true) &&
           (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
           (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
-        )
+      )
     },
     
     /**

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="bg-transparent 
+  <v-sheet  class="bg-transparent 
                   d-flex 
                   justify-center 
                   pa-2" 
@@ -18,8 +18,8 @@
               <v-btn  prepend-icon="mdi-arrow-left" 
                       variant="tonal"
                       @click="$router.go(-1)">
-              Назад
-            </v-btn>
+                Назад
+              </v-btn>
             </template>
           </NavigationBar>
 
@@ -30,13 +30,13 @@
                           justify-space-between" 
                     height="5%">
           </v-sheet>
-          <v-sheet class="bg-transparent 
+          <v-sheet  class="bg-transparent 
                           d-flex 
                           flex-row 
                           justify-start
                           pa-5" 
                     height="45%" 
-                    rounded >
+                    rounded>
             <v-sheet class="mr-5 bg-transparent" width="250px">
               <VImg class="rounded-lg elevation-10" 
                     :src="film.poster.url" 
@@ -63,12 +63,12 @@
                             variant="solo"/>
                 </v-sheet>
                 <v-sheet width="100%" class="bg-transparent mt-2 d-flex">
-                  <v-btn icon
-                        rounded
-                        variant="tonal"
-                        @click="addFilmToFavourites()"
-                        :color="isInFavourites ? 'primary' : ''"
-                        class="mr-2 flex-grow-1">
+                  <v-btn  icon
+                          rounded
+                          variant="tonal"
+                          @click="addFilmToFavourites()"
+                          :color="isInFavourites ? 'primary' : ''"
+                          class="mr-2 flex-grow-1">
                     <VTooltip text="Добавить в избранное" 
                               activator="parent" 
                               location="top"/>
