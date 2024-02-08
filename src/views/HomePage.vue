@@ -1,22 +1,30 @@
 <template>
-  <v-sheet  class="bg-transparent 
-                  d-flex 
-                  justify-center 
-                  pa-2" 
-            width="100%">
-    <v-sheet class="bg-transparent" width="1200px">
+  <v-sheet  
+    class="bg-transparent 
+      d-flex 
+      justify-center 
+      pa-2" 
+    width="100%">
+    <v-sheet 
+      class="bg-transparent" 
+      width="1200px"
+    >
       <NavigationBar/>
-      <v-img  class="d-flex rounded-lg "
-              v-bind=props
-              :src="featuredFilmPoster"
-              cover
-              height="500px">
-        <div  class="bg-blur 
-                    featured-film-overlay 
-                    pa-5 
-                    rounded-lg 
-                    d-flex 
-                    flex-row">
+      <v-img  
+        class="d-flex 
+          rounded-lg"
+        v-bind=props
+        :src="featuredFilmPoster"
+        cover
+        height="500px">
+        <div  
+          class="bg-blur 
+            featured-film-overlay 
+            pa-5 
+            rounded-lg 
+            d-flex 
+            flex-row"
+        >
 
           <v-sheet  class="bg-transparent">
             <div class="text-h4 text-disabled">
@@ -26,40 +34,48 @@
             <div class="text-h2 mb-5">
               {{ featuredFilmName }}
             </div>
-            <div  class="text-body-1 text-disabled"
-                  height="100%">
+            <div  
+              class="text-body-1 
+                text-disabled"
+              height="100%">
               {{ featuredFilmDescription }}
             </div>
-            <v-btn  class="mt-5" 
-                    variant="outlined" 
-                    size="large" 
-                    :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}">
+            <v-btn  
+              class="mt-5" 
+              variant="outlined" 
+              size="large" 
+              :to="{name: 'film', params: {id: filmStore.featuredFilm.id}}"
+            >
               СМОТРЕТЬ
             </v-btn>
           </v-sheet>
-          <v-img  class="rounded-lg ma-2"
-                  :src="featuredFilmPoster"
-                  cover
-                  width="300px">
-          </v-img>
+          <VImg  
+            class="rounded-lg ma-2"
+            :src="featuredFilmPoster"
+            cover
+            width="300px"/>
         </div>
       </v-img>
-      <VDivider class="ma-2"></VDivider>
+      <VDivider class="ma-2"/>
       <!-- films list -->
-      <v-sheet  class="bg-transparent 
-                      d-flex 
-                      flex-row 
-                      pa-5 
-                      pt-0" 
-                width="100%">
-        <FilmsList  :films="filmsPageList" 
-                    :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
-                    :filmsCount="filmStore.filmsCount"
-                    @filtered="setFilters"
-                    @sorted="setSorting"
-                    @pageInfo="changePageSettings"/>
+      <v-sheet  
+        class="bg-transparent 
+          d-flex 
+          flex-row 
+          pa-5 
+          pt-0" 
+        width="100%">
+        <FilmsList  
+          :films="filmsPageList" 
+          :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
+          :filmsCount="filmStore.filmsCount"
+          @filtered="setFilters"
+          @sorted="setSorting"
+          @pageInfo="changePageSettings"/>
       </v-sheet>
-      <VPagination :length="pageCount" v-model="currentFilmPage"/>
+      <VPagination 
+        :length="pageCount" 
+        v-model="currentFilmPage"/>
     </v-sheet>
   </v-sheet>
 </template>

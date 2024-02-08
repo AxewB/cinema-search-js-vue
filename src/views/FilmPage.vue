@@ -1,158 +1,218 @@
 <template>
-  <v-sheet  class="bg-transparent 
-                  d-flex 
-                  justify-center 
-                  pa-2" 
-            width="100%">
-    <v-sheet class="bg-transparent" 
-             width="1200px" 
-             rounded>
-
-      <VImg :src="film.poster.url" 
-            cover 
-            class="rounded-lg">
+  <v-sheet  
+    class="bg-transparent 
+      d-flex 
+      justify-center 
+      pa-2" 
+    width="100%"
+  >
+    <v-sheet 
+      class="bg-transparent" 
+      width="1200px" 
+      rounded
+    >
+      <VImg 
+        :src="film.poster.url" 
+        cover 
+        class="rounded-lg">
             
         <v-sheet class="background-overlay">
           <NavigationBar>
             <template #start>
-              <v-btn  prepend-icon="mdi-arrow-left" 
-                      variant="tonal"
-                      @click="$router.go(-1)">
+              <v-btn  
+                prepend-icon="mdi-arrow-left" 
+                variant="tonal"
+                @click="$router.go(-1)"
+              >
                 Назад
               </v-btn>
             </template>
           </NavigationBar>
 
           <!-- filler -->
-          <v-sheet  class="bg-transparent 
-                          pa-5 
-                          d-flex 
-                          justify-space-between" 
-                    height="5%">
-          </v-sheet>
-          <v-sheet  class="bg-transparent 
-                          d-flex 
-                          flex-row 
-                          justify-start
-                          pa-5" 
-                    height="45%" 
-                    rounded>
-            <v-sheet class="mr-5 bg-transparent" width="250px">
-              <VImg class="rounded-lg elevation-10" 
-                    :src="film.poster.url" 
-                    cover/>
+          <VSheet 
+            class="bg-transparent 
+              pa-5 
+              d-flex 
+              justify-space-between" 
+            height="5%"/>
+
+          <v-sheet  
+            class="bg-transparent 
+              d-flex 
+              flex-row 
+              justify-start
+              pa-5" 
+            height="45%" 
+            rounded>
+            <v-sheet 
+              class="mr-5 bg-transparent" 
+              width="250px"
+            >
+              <VImg 
+                class="rounded-lg 
+                  elevation-10" 
+                :src="film.poster.url" 
+                cover/>
               
               <VDivider class="ma-2" /> 
-              <VBtn v-if="!userStore.isExists(filmId)"  
-                    @click="addFilmToUserList()" 
-                    text="Добавить в список"/>
-              <v-sheet  v-else 
-                        class="d-flex 
-                              flex-column 
-                              bg-transparent" 
-                        width="100%">
-                <v-sheet  class="d-flex 
-                                flex-row 
-                                bg-transparent" 
-                          width="100%">
-                  <VSelect  :items="userStore.lists" 
-                            v-model="userStore.films[filmId].status" 
-                            hide-details
-                            class="flex-grow-1 text-capitalize"
-                            density="comfortable"
-                            variant="solo"/>
+
+              <VBtn 
+                v-if="!userStore.isExists(filmId)"  
+                @click="addFilmToUserList()" 
+                text="Добавить в список"/>
+              <v-sheet  
+                v-else 
+                class="d-flex 
+                  flex-column 
+                  bg-transparent" 
+                width="100%"
+              >
+                <v-sheet  
+                  class="d-flex 
+                    flex-row 
+                    bg-transparent" 
+                  width="100%"
+                >
+                  <VSelect  
+                    :items="userStore.lists" 
+                    v-model="userStore.films[filmId].status" 
+                    hide-details
+                    class="flex-grow-1 text-capitalize"
+                    density="comfortable"
+                    variant="solo"/>
                 </v-sheet>
-                <v-sheet width="100%" class="bg-transparent mt-2 d-flex">
-                  <v-btn  icon
-                          rounded
-                          variant="tonal"
-                          @click="addFilmToFavourites()"
-                          :color="isInFavourites ? 'primary' : ''"
-                          class="mr-2 flex-grow-1">
-                    <VTooltip text="Добавить в избранное" 
-                              activator="parent" 
-                              location="top"/>
+                <v-sheet 
+                  width="100%" 
+                  class="bg-transparent 
+                    mt-2 
+                    d-flex"
+                >
+                  <v-btn  
+                    icon
+                    rounded
+                    variant="tonal"
+                    @click="addFilmToFavourites()"
+                    :color="isInFavourites ? 'primary' : ''"
+                    class="mr-2 flex-grow-1">
+                    <VTooltip 
+                      text="Добавить в избранное" 
+                      activator="parent" 
+                      location="top"/>
                     <VIcon icon="mdi-heart" />
                   </v-btn>
-                  <v-btn  icon 
-                          rounded 
-                          @click="removeFilmFromList()" 
-                          variant="tonal" 
-                          color="error">
-                    <VTooltip text="Удалить из списка" 
-                              activator="parent" 
-                              location="top"/>
+                  <v-btn  
+                    icon 
+                    rounded 
+                    @click="removeFilmFromList()" 
+                    variant="tonal" 
+                    color="error"
+                  >
+                    <VTooltip 
+                      text="Удалить из списка" 
+                      activator="parent" 
+                      location="top"/>
                     <VIcon icon="mdi-delete"/>
                   </v-btn>  
                 </v-sheet>
-                <v-sheet  class="d-flex 
-                                flex-row 
-                                bg-transparent 
-                                justify-center" 
-                          width="100%">
-                  <VRating  v-model="userStore.films[this.$route.params.id].rating"
-                            hover
-                            half-increments/>
+                <v-sheet  
+                  class="d-flex 
+                    flex-row 
+                    bg-transparent 
+                    justify-center" 
+                  width="100%">
+                  <VRating  
+                    v-model="userStore.films[this.$route.params.id].rating"
+                    hover
+                    half-increments/>
                 </v-sheet>
               </v-sheet>
               
               <VDivider class="ma-2"/>
-              <v-list v-if="film.watchability.items" rounded >
+              <v-list 
+                v-if="film.watchability.items" 
+                rounded
+              >
                 <v-list-subheader>
                   ГДЕ ПОСМОТРЕТЬ
                 </v-list-subheader>
                 
-                <v-list  max-height="250px" class="overflow-auto">
-                  <v-list-item v-for="cinema in film.watchability.items" :key="cinema._id" :href="cinema.url" class="mb-2 d-flex align-center" size="x-large" icon>
-                    <VAvatar :image="cinema.logo.url" size="30" class="mr-2"/>
+                <v-list  
+                  max-height="250px" 
+                  class="overflow-auto"
+                >
+                  <v-list-item 
+                    class="mb-2 
+                      d-flex 
+                      align-center" 
+                    v-for="cinema in film.watchability.items" 
+                    :key="cinema._id" 
+                    :href="cinema.url" 
+                    size="x-large" 
+                    icon
+                  >
+                    <VAvatar 
+                      :image="cinema.logo.url" 
+                      size="30" 
+                      class="mr-2"/>
                     {{ cinema.name }}
                   </v-list-item>
                 </v-list>
               </v-list>
             </v-sheet>
-            <v-sheet  class="d-flex 
-                            flex-column 
-                            bg-transparent" 
-                      width="100%" >
-              <v-sheet class="text-h2 
-                              bg-transparent 
-                              mt-10 
-                              d-flex
-                              align-center" width="100%" >
+            <v-sheet  
+              class="d-flex 
+                flex-column 
+                bg-transparent" 
+              width="100%" >
+              <v-sheet 
+                class="text-h2 
+                  bg-transparent 
+                  mt-10 
+                  d-flex
+                  align-center" 
+                width="100%" >
                 <v-sheet class="flex-grow-1 bg-transparent">
                   {{  film.name }}
                 </v-sheet>
-                <v-sheet  class="rounded-lg 
-                                pa-2 
-                                text-h3 
-                                elevation-10">
+                <v-sheet  
+                  class="rounded-lg 
+                    pa-2 
+                    text-h3 
+                    elevation-10">
                   {{ film.rating.kp.toFixed(1) }}
                 </v-sheet>
               </v-sheet>
-              <v-sheet  class="text-body-1 
-                              bg-transparent 
-                              pa-2 
-                              mt-10" 
-                        width="100%" >
+              <v-sheet  
+                class="text-body-1 
+                  bg-transparent 
+                  pa-2 
+                  mt-10" 
+                width="100%" >
                 {{ film.description }}
               </v-sheet>
               
               <VDivider class="ma-2"/>
-              <FilmInfoBar  v-if="film.year" 
-                            :title="'Год'" 
-                            :data="film.year.toString()"/>
-              <FilmInfoBar  v-if="film.alternativeName" 
-                            :title="'Альтернативное название'" 
-                            :data="film.alternativeName"/>
-              <FilmInfoBar  v-if="film.movieLength" 
-                            :title="'Длительность (мин)'" 
-                            :data="film.movieLength.toString()"/>
-              <FilmInfoBar  v-if="film.type" 
-                            :title="'Тип фильма'" 
-                            :data="film.type"/>
-              <FilmInfoBar  v-if="otherNames" 
-                            :title="'Другие названия'" 
-                            :data="otherNames"/>
+              <FilmInfoBar  
+                v-if="film.year" 
+                :title="'Год'" 
+                :data="film.year.toString()"/>
+              <FilmInfoBar  
+                v-if="film.alternativeName" 
+                :title="'Альтернативное название'" 
+                :data="film.alternativeName"/>
+              <FilmInfoBar  
+                v-if="film.movieLength" 
+                :title="'Длительность (мин)'" 
+                :data="film.movieLength.toString()"/>
+              <FilmInfoBar  
+                v-if="film.type" 
+                :title="'Тип фильма'" 
+                :data="film.type"/>
+              <FilmInfoBar  
+                v-if="otherNames" 
+                :title="'Другие названия'" 
+                :data="otherNames"/>
 
               <VDivider class="ma-2"/>
               
@@ -160,14 +220,27 @@
                 Рекомендации
               </div>
               
-              <v-sheet class="d-flex flex-row bg-transparent mx-auto" height="250px" max-width="900px">
-                <v-slide-group show-arrows class="overflow-auto">
-                  <v-slide-group-item v-for="film in recommendedFilms"
-                                      :key="film.id + Date.now() + 'recommendations'">  
-                    <FilmCard :film="film"
-                              :cardWidth="'130px'"
-                              :tileSize="'small'"
-                              :showDetails="false"/>
+              <v-sheet 
+                class="d-flex 
+                  flex-row 
+                  bg-transparent 
+                  mx-auto" 
+                height="250px" 
+                max-width="900px"
+              >
+                <v-slide-group 
+                  show-arrows 
+                  class="overflow-auto"
+                >
+                  <v-slide-group-item 
+                    v-for="film in recommendedFilms"
+                    :key="film.id + Date.now() + 'recommendations'"
+                  >  
+                    <FilmCard
+                      :film="film"
+                      :cardWidth="'130px'"
+                      :tileSize="'small'"
+                      :showDetails="false"/>
                   </v-slide-group-item>
                 </v-slide-group>
               </v-sheet>
