@@ -79,10 +79,7 @@ export const useFilmStore = defineStore('film', {
      * @returns {Array} - Отсортированный и отфильтрованный, обрезанный массив
      */
     sortedNFilteredByFieldRange(state){
-      const result = this.filteredFilms.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
-      if (state.sortDirection === 'descending')
-        result.reverse();
-      return result.slice(state.filterRange[0], state.filterRange[1])
+      return this.sortedNFilteredByField.slice(state.filterRange[0], state.filterRange[1])
     },
     /**
      * Возвращает массив, где первый элемент - минимальный год из имеющихся в фильмах, а последний - максимальный
