@@ -52,7 +52,7 @@
                  readonly
                  :length="5"
                  :size="24"
-                 :model-value="film.rating.kp"
+                 :model-value="film.rating.kp / 2"
                  active-color="primary"
                  half-increments/>
       </v-card-text>
