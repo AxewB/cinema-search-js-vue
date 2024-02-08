@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/favourites',
     name: 'favourites',
-    component: () => import('../views/FavouritesPage.vue')
+    component: () => import('../views/BookmarksPage.vue')
   },
   {
     path: '/film/:id',

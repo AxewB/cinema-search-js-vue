@@ -12,8 +12,11 @@
       <NavigationBar/>
       <FilmsList  :films="filmsPageList" 
                   :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
+                  :filmsCount="userStore.filmsCount"
+                  :page="userStore.page"
                   @filtered="setFilters"
-                  @sorted="setSorting">
+                  @sorted="setSorting"
+                  @pageInfo="changePageInfo">
         <template #extraFilters>
           <v-sheet  class="mr-5 
                           flex-grow-1 
@@ -48,14 +51,7 @@ import { mapStores } from 'pinia';
 import { useUserStore} from '@/store/userStore';
 import FilmsList from '@/components/FilmsList.vue';
 export default {
-  name: "FavouritesPage",
-  data() {
-    return { 
-      tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
-      currentTileSize: 'standart',
-      tilesOnOnePage: {'small': 36, 'standart': 25, 'large': 16},
-    }
-  },
+  name: "BookmarksPage",
   components: {
     NavigationBar,
     FilmsList
@@ -63,7 +59,7 @@ export default {
   computed: {
     ...mapStores(useUserStore),
     filmsPageList() {
-      return this.userStore.filteredFilms
+      return this.userStore.filteredFilmsFromRange
     },
     sortBy() {
       return this.userStore.filterSettings.sortBy
@@ -96,6 +92,10 @@ export default {
         sortDirection, 
         sortBy
       }
+    },
+    changePageInfo(pageInfo) {
+      this.userStore.page = pageInfo.currentPage
+      this.userStore.filterSettings.range = [pageInfo.range.begin, pageInfo.range.end]
     }
   }
 }

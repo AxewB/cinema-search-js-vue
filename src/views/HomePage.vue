@@ -54,8 +54,10 @@
                 width="100%">
         <FilmsList  :films="filmsPageList" 
                     :sortByFieldsList="{name: 'Имя', year: 'Год', movieLength: 'Длительность', rating: 'Оценка'}"
+                    :filmsCount="filmStore.filmsCount"
                     @filtered="setFilters"
-                    @sorted="setSorting"/>
+                    @sorted="setSorting"
+                    @pageInfo="changePageSettings"/>
       </v-sheet>
       <VPagination :length="pageCount" v-model="currentFilmPage"/>
     </v-sheet>
@@ -73,14 +75,6 @@ export default {
     NavigationBar,
     FilmsList
   },
-  data() {
-    return {
-      currentFilmPage: 1,
-      tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
-      currentTileSize: 'standart',
-      tilesOnOnePage: {'small': 36, 'standart': 25, 'large': 16},
-    }
-  },
   computed: {
     ...mapState(useFilmStore, ['sortBy', 'featuredFilm']),
     ...mapStores(useFilmStore),
@@ -96,30 +90,13 @@ export default {
     filmsPageList() {
       return this.filmStore.sortedNFilteredByFieldRange
     },
-    
-    // Пересчитывает, сколько должно быть фильмов на одной странице
-    filmsOnOnePage() {
-      const begin = (this.currentFilmPage - 1) * this.tilesOnOnePage[this.currentTileSize];
-      const end = this.currentFilmPage * this.tilesOnOnePage[this.currentTileSize];
-      return [begin, end]
-    },
-
-    // Определяет количество возможных страниц
-    pageCount() {
-      return Math.ceil(this.filmStore.filmsCount / this.tilesOnOnePage[this.currentTileSize])
-    },
   },
   methods: {
-    // Сброс страницы при изменении фильтрации/сортировки
-    resetPage() {
-      this.currentFilmPage = 1
-    },
     /**
      * Устанавливает значения для фильтрации фильмов
      * @param {Object} filters - Объект с настройками фильтрации
      */
     setFilters(filters) {
-      this.resetPage()
       const {name, rating, year, length} = filters
       this.filmStore.filteringSettings = {
         ...this.filmStore.filteringSettings,
@@ -134,31 +111,17 @@ export default {
      * @param {Object} sortSettings - Объект с настройками сортировки
      */
     setSorting(sortSettings) {
-      this.resetPage()
       const {sortDirection, sortBy} = sortSettings;
       this.filmStore.sortBy = sortBy;
       this.filmStore.sortDirection = sortDirection;
     },
     // Устанавливает границы для отсечения фильмов в хранилище
-    changePageSettings() {
-      const begin = this.filmsOnOnePage[0];
-      const end = this.filmsOnOnePage[1];
+    changePageSettings(pageInfo) {
+      const begin = pageInfo.range.begin;
+      const end = pageInfo.range.end;
       this.filmStore.filterRange = [begin, end];
     }
   },
-
-  watch: {
-    // При изменении размера плиток, их число на одной странице пересчитывается, 
-    // а страница сбрасывается на первую
-    currentTileSize() {
-      this.resetPage()
-      this.changePageSettings()
-    },
-    // При перелистывании запрашивает следующую или предыдущую стрнаицу фильмов
-    currentFilmPage() { 
-      this.changePageSettings()
-    }    
-  }
 }
 </script>
 

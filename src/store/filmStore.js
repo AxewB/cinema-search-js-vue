@@ -22,7 +22,6 @@ export const useFilmStore = defineStore('film', {
     filterRange: [0, 25],
     // Параметр, по которому осуществляется сортировка
     sortBy: 'name', // name, rating, length, year
-
     // Направление сортировки (прямое и инвертированное)
     sortDirection: 'ascending',
   }),
@@ -34,7 +33,7 @@ export const useFilmStore = defineStore('film', {
      */
     filmsCount(state) {
       if (state.filteringSettings.name || state.filteringSettings.length || state.filteringSettings.rating || state.filteringSettings.year)
-        return this.filteredFilms.length
+        return this.sortedNFilteredByField.length
       else
         return state.films.length
     },
@@ -48,29 +47,25 @@ export const useFilmStore = defineStore('film', {
       const index = getRandomInt(state.films.length)
       return state.films[index];
     },
-    /**
-     * Возвращает отфильтрованный массим по заданным параметрам (название, год, длительность, рейтинг)
-     * @param {Object} state - состояние хранилища
-     * @returns {Array} - отфильтрованный массив
-     */
-    filteredFilms(state) {
-      return state.films.filter((film) =>
-        film.name.toLowerCase().includes(state.filteringSettings.name.toLowerCase()) &&
-          (state.filteringSettings.rating ? film.rating.kp >= state.filteringSettings.rating : true) &&
-          (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
-          (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
-      )
-    },
     
     /**
-     * Использует отфильтрованный массив и сортирует его по указанному полю (названию, году, длительности, рейтингу)
+     * Фильтрует массив и сортирует его по указанному полю (названию, году, длительности, рейтингу)
      * @param {Object} state - Состяние хранилища
      * @returns {Array} - Отсортированный и отфильтрованный массив
      */
     sortedNFilteredByField(state) {
-      const result = this.filteredFilms.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
+      let result = state.films.filter((film) =>
+        film.name.toLowerCase().includes(state.filteringSettings.name.toLowerCase()) &&
+        (state.filteringSettings.rating ? film.rating.kp >= state.filteringSettings.rating : true) &&
+        (state.filteringSettings.length ? film.movieLength <= state.filteringSettings.length : true)  &&
+        (state.filteringSettings.year ? film.year === state.filteringSettings.year : true)
+      )
+      
+      result = result.sort((a,b) => (a[state.sortBy] > b[state.sortBy]) ? 1 : ((b[state.sortBy] > a[state.sortBy]) ? -1 : 0));
+
       if (state.sortDirection === 'descending')
         result.reverse();
+
       return result
     },
     /**

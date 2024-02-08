@@ -122,7 +122,7 @@
             <VIcon icon="mdi-size-s"/>
           </v-btn>
           
-          <v-btn icon value="standart">
+          <v-btn icon value="medium">
             <VTooltip text="Средние карточки" 
                       activator="parent" 
                       location="top"/>
@@ -152,6 +152,8 @@
                   :tileSize="currentTileSize"/>
       </v-sheet>
     </v-sheet>
+    <VDivider class="mb-2"/>
+    <VPagination :length="pageCount" v-model="currentPage"/>
   </v-sheet>
 </template>
 
@@ -174,6 +176,13 @@ export default {
       required: true,
     },
     /**
+     * Общее количество фильмов. Используется для перерасчета их количества на одной странице
+     */
+    filmsCount: {
+      type: Number,
+      required: true
+    },
+    /**
      * Cписок полей, по которым можно будет отсортировать список фильмов
      * Условия сортировки будут передаваться в родительский компонент через this.emit() 
      */
@@ -183,9 +192,12 @@ export default {
   },
   data() {
     return {
-      tileSize: {'small': '150px', 'standart': '200px', 'large': '250px'},
-      currentTileSize: 'standart',
+      tileSize: {'small': '150px', 'medium': '200px', 'large': '250px'},
+      currentTileSize: 'medium',
+      tilesOnOnePage: {'small': 36, 'medium': 25, 'large': 16},
       
+      currentPage: 1,
+
       sortDirection: 'ascending',
       sortBy: 'name',
       filmFilters: {
@@ -199,11 +211,14 @@ export default {
     }
   }, 
   methods: {
+    resetPage() {
+      this.currentPage = 1
+    },
     /**
      * Отправляет выбранные фильтры в родительский компонент
      */
     acceptFilters() {
-      this.additionalKey = JSON.stringify(this.filmFilters)
+      this.resetPage();
       this.$emit('filtered', {
         name: this.filmFilters.name, 
 
@@ -213,19 +228,48 @@ export default {
         length: +this.filmFilters.length > this.maxLength ? this.maxLength : +this.filmFilters.length < 0 ? 0 : +this.filmFilters.length,
         rating: +this.filmFilters.rating * 2,
       })
+      this.additionalKey = JSON.stringify(this.filmFilters)
     },
     /**
      * Отправляет выбранный вариант сортировки в родительский компонент
      */
     acceptSorting() {
+      this.resetPage();
       this.$emit('sorted', {
         sortDirection: this.sortDirection, 
         sortBy: this.sortBy
       })
+      this.additionalKey = JSON.stringify(this.filmFilters)
+    },
+
+    sendPageInfo() {
+      this.$emit('pageInfo', {
+        currentPage: this.currentPage,
+        range: this.filmRange,
+        pages: this.pageCount,
+      })
     }
   },
   computed: {
-    ...mapState(useFilmStore, ['filmsYearRange'])
+    ...mapState(useFilmStore, ['filmsYearRange']),
+    
+    // Пересчитывает, сколько должно быть фильмов на одной странице
+    filmRange() {
+      const begin = (this.currentPage - 1) * this.tilesOnOnePage[this.currentTileSize];
+      const end = this.currentPage * this.tilesOnOnePage[this.currentTileSize];
+      return {begin, end}
+    },
+    // Определяет количество возможных страниц
+    pageCount() {
+      return Math.ceil(this.filmsCount / this.tilesOnOnePage[this.currentTileSize])
+    },
+
+    
+  },
+  watch: {
+    currentPage() { 
+      this.sendPageInfo()
+    }    
   },
   /**
   * Сбрасывает состояние списка при его повторной прогрузке

@@ -62,6 +62,116 @@ export const useUserStore = defineStore("user", {
         film: filmsData.docs[8],
         status: "В планах",
       },
+      775276: {
+        favourite: true,
+        film: filmsData.docs[9],
+        status: "В планах"
+      },
+      42664: {
+        favourite: true,
+        film: filmsData.docs[10],
+        status: "В планах"
+      },
+      435: {
+        favourite: false,
+        film: filmsData.docs[11],
+        status: "В планах"
+      },
+      464963: {
+        favourite: false,
+        film: filmsData.docs[12],
+        status: "В планах"
+      },
+      258687: {
+        favourite: false,
+        film: filmsData.docs[13],
+        status: "В планах"
+      },
+      4374: {
+        favourite: false,
+        film: filmsData.docs[14],
+        status: "В планах"
+      },
+      689: {
+        favourite: true,
+        film: filmsData.docs[15],
+        status: "В планах"
+      },
+      1188529: {
+        favourite: false,
+        film: filmsData.docs[16],
+        status: "В планах"
+      },
+      41520: {
+        favourite: true,
+        film: filmsData.docs[17],
+        status: "В планах"
+      },
+      685246: {
+        favourite: false,
+        film: filmsData.docs[18],
+        status: "В планах"
+      },
+      448: {
+        favourite: false,
+        film: filmsData.docs[19],
+        status: "В планах"
+      },
+      1108577: {
+        favourite: false,
+        film: filmsData.docs[20],
+        status: "В планах"
+      },
+      361: {
+        favourite: true,
+        film: filmsData.docs[21],
+        status: "В планах"
+      },
+      45146: {
+        favourite: true,
+        film: filmsData.docs[22],
+        status: "В планах"
+      },
+      397667: {
+        favourite: false,
+        film: filmsData.docs[23],
+        status: "В планах"
+      },
+      843649: {
+        favourite: false,
+        film: filmsData.docs[24],
+        status: "В планах"
+      },
+      2213: {
+        favourite: true,
+        film: filmsData.docs[25],
+        status: "В планах"
+      },
+      1100777: {
+        favourite: false,
+        film: filmsData.docs[26],
+        status: "В планах"
+      },
+      843650: {
+        favourite: false,
+        film: filmsData.docs[27],
+        status: "В планах"
+      },
+      820638: {
+        favourite: true,
+        film: filmsData.docs[28],
+        status: "В планах"
+      },
+      342: {
+        favourite: true,
+        film: filmsData.docs[29],
+        status: "В планах"
+      },
+      409600: {
+        favourite: true,
+        film: filmsData.docs[30],
+        status: "В планах"
+      },
     },
 
     // Названия списков, в которые можно добавить фильм
@@ -79,10 +189,22 @@ export const useUserStore = defineStore("user", {
         rating: 0,
         length: 0,
         year: null,
-      }
+      },
+
+      // Диапазон отсечения фильмов
+      range: [0, 25],
     }
   }),
   getters: {
+    /**
+     * Возвращает количество фильмов в закладках
+     * 
+     * @param {Object} state - состояние хранилища
+     * @returns {Number} - число фильмов в закладках
+     */
+    filmsCount() {
+      return Object.keys(this.films).length;
+    },
     /**
      * Проверяет наличие фильма в закладках
      * 
@@ -143,6 +265,8 @@ export const useUserStore = defineStore("user", {
       }
       return result
     },
+    
+
     /**
      * Фильтрует фильмы в соответствии с настройками фильтрации в состоянии.
      * 
@@ -174,6 +298,14 @@ export const useUserStore = defineStore("user", {
         result.reverse();
       }
       return result
+    },
+
+    /**
+     * Возвращает часть отфильтрованного списка фильмов
+     * @returns {Array} - Массив фильмов в заданном диапазоне
+     */
+    filteredFilmsFromRange() {
+      return this.filteredFilms.slice(this.filterSettings.range[0], this.filterSettings.range[1])
     },
   },
   actions: {
