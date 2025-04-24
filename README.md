@@ -5,7 +5,7 @@
 Сначала необходимо склонировать проекта:
 
 ```bash
-git clone http://git.nic.etu/iaksenov/233-cinema-search-js-vue.git
+git clone https://github.com/AxewB/cinema-search-js-vue
 ```
 
 Далее в папке с проектом нужно скачать все плагины:
